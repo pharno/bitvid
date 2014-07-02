@@ -9,21 +9,19 @@ from errors import errors
 app = Flask(__name__)
 
 def make_json_error(ex):
-	response = jsonify(message=str(ex))
 	exceptionname = ex.__class__.__name__
 
 	if exceptionname in errors.keys():
 		errordata = errors[exceptionname]
-		if "message" in errordata.keys():
-			response = jsonify(message=str(errordata["message"]))
-
-		if "status" in errordata.keys():
-			response.status_code = errordata["status"]
-
 	else:
-		response.status_code = (ex.code
-								if isinstance(ex, HTTPException)
-								else 500)
+		errordata = errors["Exception"]
+
+	if "message" in errordata.keys():
+		response = jsonify(message=str(errordata["message"]))
+
+	if "status" in errordata.keys():
+		response.status_code = errordata["status"]
+
 	return response
 
 db.app = app
