@@ -12,3 +12,4 @@ class PrdConfig(Config):
 class DevConfig(Config):
 	DEBUG = True
 	SQLALCHEMY_DATABASE_URI = 'sqlite:///../database.sqlite'
+	SERVER_NAME = "local.bitvid.tv:5000"

@@ -2,6 +2,7 @@ __author__ = 'pharno'
 
 from flask.ext import restful
 from flask.ext.restful import reqparse, fields, marshal_with
+from sqlalchemy.orm import relationship, backref
 
 from bitvid.shared import db
 from bitvid.errors import UserExistsException
@@ -10,9 +11,11 @@ class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	email = db.Column(db.String(120), unique=True)
 	_password = db.Column(db.String(128))
+	#sessions = relationship("Session", backref="user")
 
 	marshal_fields = {
 		"email": fields.String
+		"id"   : fields.Integer
 	}
 
 	def __init__(self, email, password):
@@ -32,7 +35,6 @@ class User(db.Model):
 
 
 class UserResource(restful.Resource):
-
 	@marshal_with(User.marshal_fields)
 	def post(self):
 		parser = reqparse.RequestParser()
@@ -40,7 +42,6 @@ class UserResource(restful.Resource):
 		parser.add_argument('password', required=True,type=str)
 		args = parser.parse_args()
 
-		raise Exception()
 		userexists = User.query.filter_by(email = args["email"]).first()
 		if userexists is not None:
 			raise UserExistsException()
