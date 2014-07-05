@@ -44,7 +44,6 @@ class UserResource(restful.Resource):
         parser.add_argument('password', required=True, type=str)
         args = parser.parse_args()
 
-        raise Exception()
         userexists = User.query.filter_by(email=args["email"]).first()
         if userexists is not None:
             raise UserExistsException()
