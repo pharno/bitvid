@@ -25,4 +25,3 @@ Text color - Black/*White/Dark green/Green/Cyan/Blue/Orange/Yellow/Pink
 Outline color - *Black/White/Dark green/Green/Cyan/Blue/Orange/Yellow/Pink
 
 """
-

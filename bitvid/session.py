@@ -14,79 +14,82 @@ import json
 from shared import db
 from uuid import uuid4
 
-class Session(db.Model,SessionMixin):
-	id = db.Column(db.Integer, primary_key=True)
-	token = db.Column(db.String(128))
-	_data = db.Column(db.String(16384))
 
-	user_id = db.Column(db.Integer, ForeignKey('user.id'))
-	user = relationship("User",backref=backref("sessions"))
+class Session(db.Model, SessionMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(128))
+    _data = db.Column(db.String(16384))
 
-	marshal_fields = {
-		"token": fields.String
-	}
+    user_id = db.Column(db.Integer, ForeignKey('user.id'))
+    user = relationship("User", backref=backref("sessions"))
 
-	def __init__(self, user):
-		self.token = self._generate_token()
-		self.user = user
-		self.data = {}
+    marshal_fields = {
+        "token": fields.String
+    }
 
-	def _generate_token(self):
-		return str(uuid4())
+    def __init__(self, user):
+        self.token = self._generate_token()
+        self.user = user
+        self.data = {}
 
-	@property
-	def data(self):
-		return json.loads(self._data)
+    def _generate_token(self):
+        return str(uuid4())
 
-	@data.setter
-	def data(self,data):
-		self._data = json.dumps(data)
+    @property
+    def data(self):
+        return json.loads(self._data)
 
-	def save(self):
-		db.session.add(self)
-		db.session.commit()
+    @data.setter
+    def data(self, data):
+        self._data = json.dumps(data)
 
-	def __getitem__(self,key):
-		print "session.__getitem__({})".format(key)
-		return self.data[key]
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 
-	def __setitem__(self,key,value):
-		print "session.__setitem__({},{})".format(key,value)
-		newdata = self.data.copy()
-		newdata[key] = value
+    def __getitem__(self, key):
+        print "session.__getitem__({})".format(key)
+        return self.data[key]
 
-		self.data = newdata
-		self.modified = True
-		self.should_save = True
+    def __setitem__(self, key, value):
+        print "session.__setitem__({},{})".format(key, value)
+        newdata = self.data.copy()
+        newdata[key] = value
 
-		print repr(self._data)
+        self.data = newdata
+        self.modified = True
+        self.should_save = True
 
-	def __delitem__(self,key):
-		print "session.__delitem__({})".format(key)
-		del self.data[key]
+        print repr(self._data)
 
-	def __repr__(self):
-		return "<Session {token} for user {user}>".format(token=self.token,user=self.user)
+    def __delitem__(self, key):
+        print "session.__delitem__({})".format(key)
+        del self.data[key]
 
+    def __repr__(self):
+        return "<Session {token} for user {user}>".format(
+            token=self.token,
+            user=self.user)
 
 
 class DBSessionInterface(SessionInterface):
-	def open_session(self, app, request):
-		parser = reqparse.RequestParser()
-		parser.add_argument('token',type=str)
 
-		params = parser.parse_args()
+    def open_session(self, app, request):
+        parser = reqparse.RequestParser()
+        parser.add_argument('token', type=str)
 
+        params = parser.parse_args()
 
-		if params["token"]:
-			sqlsess = Session.query.filter_by(token=params["token"]).first()
-			print "loading", sqlsess
-			request.session = sqlsess
+        if params["token"]:
+            sqlsess = Session.query.filter_by(token=params["token"]).first()
+            print "loading", sqlsess
+            request.session = sqlsess
 
-		if request.session is None: # if no token was sent or the session not found
-			request.session = Session(user=None)
+        # if no token was sent or the session not found
+        if request.session is None:
+            request.session = Session(user=None)
 
-		print request.session
+        print request.session
 
-	def save_session(self, app, session, response):
-		print "saaaaaving", session
+    def save_session(self, app, session, response):
+        print "saaaaaving", session
