@@ -8,42 +8,46 @@ from errors import errors
 
 app = Flask(__name__)
 
+
 def make_json_error(ex):
-	exceptionname = ex.__class__.__name__
+    exceptionname = ex.__class__.__name__
 
-	if exceptionname in errors.keys():
-		errordata = errors[exceptionname]
-	else:
-		errordata = errors["Exception"]
+    if exceptionname in errors.keys():
+        errordata = errors[exceptionname]
+    else:
+        errordata = errors["Exception"]
 
-	if "message" in errordata.keys():
-		response = jsonify(message=str(errordata["message"]))
+    if "message" in errordata.keys():
+        response = jsonify(message=str(errordata["message"]))
 
-	if "status" in errordata.keys():
-		response.status_code = errordata["status"]
+    if "status" in errordata.keys():
+        response.status_code = errordata["status"]
 
-	return response
+    return response
 
 db.app = app
 db.init_app(app)
 
-curr_env = os.environ.get("BITVID_ENV","Dev")
+curr_env = os.environ.get("BITVID_ENV", "Dev")
 app.config.from_object("bitvid.config.{env}Config".format(env=curr_env))
 
 from flask.ext import restful
 
+
 class BitVidRestful(restful.Api):
-	def handle_error(self,ex):
-		return make_json_error(ex)
+
+    def handle_error(self, ex):
+        return make_json_error(ex)
 
 api = BitVidRestful(app)
 
 from modules import auth
 auth.register(api)
 
+
 def init_db():
-	with app.app_context():
-		db.create_all()
+    with app.app_context():
+        db.create_all()
 
 if __name__ == '__main__':
-	app.run()
+    app.run()
