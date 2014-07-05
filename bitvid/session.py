@@ -80,6 +80,7 @@ class DBSessionInterface(SessionInterface):
 
         params = parser.parse_args()
 
+        request.session = None
         if params["token"]:
             sqlsess = Session.query.filter_by(token=params["token"]).first()
             print "loading", sqlsess
