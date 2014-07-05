@@ -7,49 +7,53 @@ from sqlalchemy.orm import relationship, backref
 from bitvid.shared import db
 from bitvid.errors import UserExistsException
 
+
 class User(db.Model):
-	id = db.Column(db.Integer, primary_key=True)
-	email = db.Column(db.String(120), unique=True)
-	_password = db.Column(db.String(128))
-	#sessions = relationship("Session", backref="user")
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True)
+    _password = db.Column(db.String(128))
+    #sessions = relationship("Session", backref="user")
 
-	marshal_fields = {
-		"email": fields.String
-		"id"   : fields.Integer
-	}
+    marshal_fields = {
+        "email": fields.String,
+        "id": fields.Integer
+    }
 
-	def __init__(self, email, password):
-		self.email = email
-		self.password = password
+    def __init__(self, email, password):
+        self.email = email
+        self.password = password
 
-	@property
-	def password(self):
-		return self._password
+    @property
+    def password(self):
+        return self._password
 
-	@password.setter
-	def password(self,password):
-		self._password = password
+    @password.setter
+    def password(self, password):
+        self._password = password
 
-	def __repr__(self):
-		return '<User %r>' % self.email
+    def __repr__(self):
+        return '<User %r>' % self.email
 
 
 class UserResource(restful.Resource):
-	@marshal_with(User.marshal_fields)
-	def post(self):
-		parser = reqparse.RequestParser()
-		parser.add_argument('email', required=True,type=str)
-		parser.add_argument('password', required=True,type=str)
-		args = parser.parse_args()
 
-		userexists = User.query.filter_by(email = args["email"]).first()
-		if userexists is not None:
-			raise UserExistsException()
+    @marshal_with(User.marshal_fields)
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('email', required=True, type=str)
+        parser.add_argument('password', required=True, type=str)
+        args = parser.parse_args()
 
-		user = User(args["email"],args["password"])
-		db.session.add(user)
-		db.session.commit()
-		return user
+        raise Exception()
+        userexists = User.query.filter_by(email=args["email"]).first()
+        if userexists is not None:
+            raise UserExistsException()
+
+        user = User(args["email"], args["password"])
+        db.session.add(user)
+        db.session.commit()
+        return user
+
 
 def register(api):
-	api.add_resource(UserResource, '/user/')
+    api.add_resource(UserResource, '/user/')
