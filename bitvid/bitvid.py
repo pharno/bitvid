@@ -10,7 +10,7 @@ from errors import errors
 
 def make_json_error(ex):
     exceptionname = ex.__class__.__name__
-
+    print exceptionname
     if exceptionname in errors.keys():
         errordata = errors[exceptionname]
     else:
@@ -23,7 +23,6 @@ def make_json_error(ex):
         response.status_code = errordata["status"]
 
     return response
-
 
 def init_db():
     with app.app_context():
@@ -50,12 +49,11 @@ from flask.ext import restful
 
 
 class BitVidRestful(restful.Api):
-    # def handle_error(self,ex):
-    #	return make_json_error(ex)
-    pass
+    def handle_error(self,ex):
+        return make_json_error(ex)
 
 
-api = BitVidRestful(app)
+api = BitVidRestful(app, catch_all_404s=True)
 
 from modules import userResource
 userResource.register(api)
