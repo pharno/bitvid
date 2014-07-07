@@ -76,7 +76,7 @@ class DBSessionInterface(SessionInterface):
 
     def open_session(self, app, request):
         parser = reqparse.RequestParser()
-        parser.add_argument('token', type=str)
+        parser.add_argument('token', type=str, location="headers")
 
         params = parser.parse_args()
 
