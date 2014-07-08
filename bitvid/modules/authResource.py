@@ -36,6 +36,7 @@ class CounterResource(restful.Resource):
     # counter for testing purposes
 
     def post(self):
+        print request.session.user.sessions
         try:
             request.session["counter"] += 1
         except KeyError:

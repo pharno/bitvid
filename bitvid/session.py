@@ -24,7 +24,7 @@ class Session(db.Model, SessionMixin):
     _data = db.Column(db.String(16384))
 
     user_id = db.Column(db.Integer, ForeignKey('user.id'))
-    user = relationship("User", backref=backref("sessions"))
+    user = relationship("User", backref=backref('sessions', order_by=id))
 
     marshal_fields = {
         "token": fields.String

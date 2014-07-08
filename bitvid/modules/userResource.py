@@ -12,7 +12,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True)
     _password = db.Column(db.String(128))
-    #sessions = relationship("Session", backref="user")
+    #sessions = relationship("Session")
 
     marshal_fields = {
         "email": fields.String,
