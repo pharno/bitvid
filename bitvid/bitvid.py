@@ -4,13 +4,14 @@ from werkzeug.exceptions import HTTPException
 from shared import db
 from session import DBSessionInterface
 import os
-
+import traceback
 from errors import errors
 
 
 def make_json_error(ex):
     exceptionname = ex.__class__.__name__
     print exceptionname
+    traceback.print_exc()
     if exceptionname in errors.keys():
         errordata = errors[exceptionname]
     else:
