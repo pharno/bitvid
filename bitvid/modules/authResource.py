@@ -20,7 +20,7 @@ class AuthResource(restful.Resource):
         args = parser.parse_args()
 
         user = User.query.filter_by(email = args["email"]).first()
-        print "user",user
+
         if not user:
             raise UserNotFoundException()
         
@@ -30,6 +30,7 @@ class AuthResource(restful.Resource):
         request.session["loggedIn"] = True
         request.session.user = user
 
+        return request.session
 
 class CounterResource(restful.Resource):
     # counter for testing purposes

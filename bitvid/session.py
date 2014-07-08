@@ -2,6 +2,8 @@ __author__ = 'pharno'
 
 
 from flask.sessions import SessionInterface, SessionMixin
+from flask import request
+
 from flask.ext.restful import reqparse, fields
 from werkzeug.contrib.sessions import SessionStore
 
@@ -10,6 +12,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy import ForeignKey
 
 import json
+import arrow
 
 from shared import db
 from uuid import uuid4
@@ -31,6 +34,8 @@ class Session(db.Model, SessionMixin):
         self.token = self._generate_token()
         self.user = user
         self.data = {}
+        self["firstLoginIP"] = request.remote_addr
+        self["createdAt"] = str(arrow.utcnow())
 
     def _generate_token(self):
         return str(uuid4())
@@ -42,6 +47,10 @@ class Session(db.Model, SessionMixin):
     @data.setter
     def data(self, data):
         self._data = json.dumps(data)
+
+    @property
+    def createdAt(self):
+    	return arrow.get(self.data["createdAt"])
 
     def save(self):
         db.session.add(self)
@@ -89,8 +98,6 @@ class DBSessionInterface(SessionInterface):
         # if no token was sent or the session not found
         if request.session is None:
             request.session = Session(user=None)
-
-        print request.session
 
     def save_session(self, app, session, response):
         print "saaaaaving", session
