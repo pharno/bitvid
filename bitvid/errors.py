@@ -28,5 +28,9 @@ errors = {
     "IncorrectCredentialsException": {
         "message": "could not login with given email and password",
         "status": 401
+    },
+    "MethodNotAllowed": {
+        "message": "Method not allowed",
+        "status" : 405
     }
 }
