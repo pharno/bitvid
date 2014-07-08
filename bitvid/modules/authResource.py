@@ -5,8 +5,8 @@ from flask.ext.restful import reqparse, fields, marshal_with
 from flask import request
 
 from bitvid.shared import db
-from bitvid.errors import UserExistsException
-
+from bitvid.errors import UserExistsException, UserNotFoundException, IncorrectCredentialsException
+from bitvid.modules.userResource import User
 from bitvid.session import Session
 
 
@@ -14,9 +14,21 @@ class AuthResource(restful.Resource):
 
     @marshal_with(Session.marshal_fields)
     def post(self):
-        request.session["loggedIn"] = True
+        parser = reqparse.RequestParser()
+        parser.add_argument('email', required=True, type=str)
+        parser.add_argument('password', required=True, type=str)
+        args = parser.parse_args()
 
-        return request.session
+        user = User.query.filter_by(email = args["email"]).first()
+        print "user",user
+        if not user:
+            raise UserNotFoundException()
+        
+        if not user.check_password(args["password"]):
+            raise IncorrectCredentialsException()
+
+        request.session["loggedIn"] = True
+        request.session.user = user
 
 
 class CounterResource(restful.Resource):

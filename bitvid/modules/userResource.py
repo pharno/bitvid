@@ -1,12 +1,12 @@
 __author__ = 'pharno'
 
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask.ext import restful
 from flask.ext.restful import reqparse, fields, marshal_with
 from sqlalchemy.orm import relationship, backref
 
 from bitvid.shared import db
 from bitvid.errors import UserExistsException
-
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,7 +29,10 @@ class User(db.Model):
 
     @password.setter
     def password(self, password):
-        self._password = password
+        self._password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     def __repr__(self):
         return '<User %r>' % self.email
