@@ -1,3 +1,5 @@
+class LoginRequiredException(Exception):
+    pass
 
 class UserExistsException(Exception):
     pass
@@ -28,5 +30,9 @@ errors = {
     "IncorrectCredentialsException": {
         "message": "could not login with given email and password",
         "status": 401
+    },
+    "LoginRequiredException": {
+        "message": "You need to be logged in to access this resource",
+        "status": 403
     }
 }
