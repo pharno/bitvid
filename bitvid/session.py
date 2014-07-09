@@ -11,7 +11,7 @@ from sqlalchemy import ForeignKey
 
 import json
 
-from shared import db
+from shared import db, generate_token
 from uuid import uuid4
 
 
@@ -28,12 +28,9 @@ class Session(db.Model, SessionMixin):
     }
 
     def __init__(self, user):
-        self.token = self._generate_token()
+        self.token = generate_token()
         self.user = user
         self.data = {}
-
-    def _generate_token(self):
-        return str(uuid4())
 
     @property
     def data(self):
