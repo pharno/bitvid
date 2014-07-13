@@ -5,13 +5,15 @@ from flask import request
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import ForeignKey
 
-from bitvid.shared import db, generate_token, login_required
+from bitvid.shared import db, generate_token, login_required, videofile_original_location
+from bitvid.errors import ResourceNotFoundException
 
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128))
     description = db.Column(db.String(4096))
     token = db.Column(db.String(128))
+    originalmime = db.Column(db.String(8))
 
     user_id = db.Column(db.Integer, ForeignKey('user.id'))
     user = relationship("User", backref=backref("videos"))
@@ -21,7 +23,7 @@ class Video(db.Model):
         "token": fields.String
     }
 
-    marshal_fields_get = {
+    marshal_fields = {
         "id" : fields.Integer,
         "title" : fields.String,
         "description": fields.String
@@ -37,7 +39,7 @@ class Video(db.Model):
     def __repr__(self):
         return '<video %r>' % self.title
 
-class VideoResource(restful.Resource):
+class VideoCollectionResource(restful.Resource):
     @marshal_with(Video.marshal_fields_create)
     @login_required
     def post(self):
@@ -58,6 +60,31 @@ class VideoResource(restful.Resource):
         print newvideo.__dict__
         return newvideo
 
+class VideoResource(restful.Resource):
+    @marshal_with(Video.marshal_fields)
+    @login_required
+    def put(self,videoID):
+        video = Video.query.filter_by(token=videoID).first()
+
+        if not video:
+            raise ResourceNotFoundException()
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('Content-Type', required=True, type=str,location='headers')
+        args = parser.parse_args()
+        mimetype = args["Content-Type"].split("/")[1].strip(".")
+        video.originalmime = mimetype
+
+        db.session.add(video)
+        db.session.commit()
+        
+        filelocation = videofile_original_location(videoID,mimetype)
+        originalvideofile = open(filelocation,"wb")
+        originalvideofile.write(request.data)
+
+        print filelocation
+        return video
 
 def register(api):
-    api.add_resource(VideoResource, '/video/')
+    api.add_resource(VideoCollectionResource, "/video/")
+    api.add_resource(VideoResource, "/video/<string:videoID>")

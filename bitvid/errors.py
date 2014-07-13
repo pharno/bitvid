@@ -10,6 +10,9 @@ class UserNotFoundException(Exception):
 class IncorrectCredentialsException(Exception):
     pass
 
+class ResourceNotFoundException(Exception):
+    pass
+
 errors = {
     "Exception": {
         "message": "Internal Server Error",
@@ -34,5 +37,9 @@ errors = {
     "LoginRequiredException": {
         "message": "You need to be logged in to access this resource",
         "status": 403
+    },
+    "ResourceNotFoundException": {
+        "message": "Could not find the resource you're trying to access",
+        "status": 404
     }
 }

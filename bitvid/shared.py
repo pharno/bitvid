@@ -3,7 +3,7 @@ __author__ = 'pharno'
 import base64
 from uuid import uuid4
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask import request
+from flask import request, current_app
 from functools import wraps
 
 from errors import LoginRequiredException
@@ -19,3 +19,9 @@ def login_required(f):
             raise LoginRequiredException()
         return f(*args, **kwargs)
     return decorated_function
+
+def videofile_original_location(token,extention):
+    return current_app.config["VIDEO_STORE_PATH"]+ current_app.config["VIDEO_ORIGINALS_PATH"]+token+"."+extention
+
+def videofile_converted_location(token,size,extention):
+    return current_app.config["VIDEO_STORE_PATH"]+ current_app.config["VIDEO_ORIGINALS_PATH"]+token+"."+extention
