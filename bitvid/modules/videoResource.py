@@ -1,12 +1,13 @@
 
 from flask.ext import restful
 from flask.ext.restful import reqparse, fields, marshal_with
-from flask import request
+from flask import request, current_app
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import ForeignKey
 
 from bitvid.shared import db, generate_token, login_required, videofile_original_location
 from bitvid.errors import ResourceNotFoundException
+from bitvid.tasks import add_together
 
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -83,6 +84,7 @@ class VideoResource(restful.Resource):
         originalvideofile.write(request.data)
 
         print filelocation
+        result = add_together.delay(10,20)
         return video
 
 def register(api):
