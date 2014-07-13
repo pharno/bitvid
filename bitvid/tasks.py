@@ -16,7 +16,12 @@ from baseapp import app as flask_app
 
 celery = make_celery(flask_app)
 
-
+import time
 @celery.task()
 def add_together(a, b):
-    return a + b
+    res = a + b
+
+    time.sleep(5)
+    flask_app.logger.info("celery calculated %i" %res)
+
+    return res
