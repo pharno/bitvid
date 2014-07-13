@@ -7,6 +7,8 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = 'sqlite://:memory:'
     VIDEO_ORIGINALS_PATH = 'originals/'
     VIDEO_CONVERTED_PATH = 'converted/'
+    CELERY_BROKER_URL='redis://localhost:6379',
+    CELERY_RESULT_BACKEND='redis://localhost:6379'
 
 class PrdConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'mysql://user@localhost/foo'
