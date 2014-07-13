@@ -62,5 +62,8 @@ userResource.register(api)
 from modules import authResource
 authResource.register(api)
 
+from modules import videoResource
+videoResource.register(api)
+
 if __name__ == '__main__':
     app.run()
