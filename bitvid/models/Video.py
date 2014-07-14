@@ -4,6 +4,7 @@ from sqlalchemy import ForeignKey
 
 from flask.ext.restful import fields
 
+
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128))
@@ -14,14 +15,13 @@ class Video(db.Model):
     user_id = db.Column(db.Integer, ForeignKey('user.id'))
     user = relationship("User", backref=backref("videos"))
 
-
     marshal_fields_create = {
         "token": fields.String
     }
 
     marshal_fields = {
-        "id" : fields.Integer,
-        "title" : fields.String,
+        "id": fields.Integer,
+        "title": fields.String,
         "description": fields.String
     }
 
@@ -30,7 +30,6 @@ class Video(db.Model):
         self.description = description
         self.user = user
         self.token = generate_token()
-
 
     def __repr__(self):
         return '<video %r>' % self.title

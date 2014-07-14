@@ -47,7 +47,7 @@ class Session(db.Model, SessionMixin):
 
     @property
     def createdAt(self):
-    	return arrow.get(self.data["createdAt"])
+        return arrow.get(self.data["createdAt"])
 
     def save(self):
         db.session.add(self)

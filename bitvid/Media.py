@@ -4,12 +4,20 @@ import subprocess
 
 
 class Media:
+
     def __init__(self, source_file):
         self.source_file = source_file
 
-
     def get_info_as_dict(self):
-        cmd = ['avprobe', '-v', 'quiet', '-of', 'json', '-show_format', '-show_streams', self.source_file]
+        cmd = [
+            'avprobe',
+            '-v',
+            'quiet',
+            '-of',
+            'json',
+            '-show_format',
+            '-show_streams',
+            self.source_file]
         raw_data = subprocess.check_output(cmd)
         return json.loads(raw_data.decode())
 
@@ -54,5 +62,5 @@ class Media:
                 'width': width,
                 'height': height,
                 'codec': codec,
-                'aspect_ratio': aspect_ratio}#,
+                'aspect_ratio': aspect_ratio}  # ,
         #        'framerate': framerate}

@@ -9,8 +9,10 @@ from functools import wraps
 from errors import LoginRequiredException
 db = SQLAlchemy()
 
+
 def generate_token():
     return str(uuid4())
+
 
 def login_required(f):
     @wraps(f)
@@ -20,8 +22,12 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-def videofile_original_location(token,extention):
-    return current_app.config["VIDEO_STORE_PATH"]+ current_app.config["VIDEO_ORIGINALS_PATH"]+token+"."+extention
 
-def videofile_converted_location(token,size,extention):
-    return current_app.config["VIDEO_STORE_PATH"]+ current_app.config["VIDEO_CONVERTED_PATH"]+token+"_"+str(size)+"."+extention
+def videofile_original_location(token, extention):
+    return current_app.config[
+        "VIDEO_STORE_PATH"] + current_app.config["VIDEO_ORIGINALS_PATH"] + token + "." + extention
+
+
+def videofile_converted_location(token, size, extention):
+    return current_app.config["VIDEO_STORE_PATH"] + current_app.config[
+        "VIDEO_CONVERTED_PATH"] + token + "_" + str(size) + "." + extention

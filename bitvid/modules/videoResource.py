@@ -10,7 +10,9 @@ from bitvid.tasks import process_video
 
 from bitvid.models.Video import Video
 
+
 class VideoCollectionResource(restful.Resource):
+
     @marshal_with(Video.marshal_fields_create)
     @login_required
     def post(self):
@@ -22,7 +24,10 @@ class VideoCollectionResource(restful.Resource):
         parser.add_argument('description', required=False, type=str)
         args = parser.parse_args()
 
-        newvideo = Video(args["title"],args["description"],request.session.user)
+        newvideo = Video(
+            args["title"],
+            args["description"],
+            request.session.user)
         db.session.add(newvideo)
         db.session.commit()
 
@@ -31,30 +36,37 @@ class VideoCollectionResource(restful.Resource):
         print newvideo.__dict__
         return newvideo
 
+
 class VideoResource(restful.Resource):
+
     @marshal_with(Video.marshal_fields)
     @login_required
-    def put(self,videoID):
+    def put(self, videoID):
         video = Video.query.filter_by(token=videoID).first()
 
         if not video:
             raise ResourceNotFoundException()
 
         parser = reqparse.RequestParser()
-        parser.add_argument('Content-Type', required=True, type=str,location='headers')
+        parser.add_argument(
+            'Content-Type',
+            required=True,
+            type=str,
+            location='headers')
         args = parser.parse_args()
         mimetype = args["Content-Type"].split("/")[1].strip(".")
         video.originalmime = mimetype
 
         db.session.add(video)
         db.session.commit()
-        
-        filelocation = videofile_original_location(videoID,mimetype)
-        originalvideofile = open(filelocation,"wb")
+
+        filelocation = videofile_original_location(videoID, mimetype)
+        originalvideofile = open(filelocation, "wb")
         originalvideofile.write(request.data)
 
         process_video.delay(video.token)
         return video
+
 
 def register(api):
     api.add_resource(VideoCollectionResource, "/video/")

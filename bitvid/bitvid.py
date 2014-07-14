@@ -8,6 +8,7 @@ from errors import errors
 
 from baseapp import app
 
+
 def make_json_error(ex):
     exceptionname = ex.__class__.__name__
     print exceptionname
@@ -24,6 +25,7 @@ def make_json_error(ex):
         response.status_code = errordata["status"]
 
     return response
+
 
 def init_db():
     with app.app_context():
@@ -43,7 +45,8 @@ from flask.ext import restful
 
 
 class BitVidRestful(restful.Api):
-    def handle_error(self,ex):
+
+    def handle_error(self, ex):
         return make_json_error(ex)
 
 

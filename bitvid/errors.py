@@ -1,14 +1,18 @@
 class LoginRequiredException(Exception):
     pass
 
+
 class UserExistsException(Exception):
     pass
+
 
 class UserNotFoundException(Exception):
     pass
 
+
 class IncorrectCredentialsException(Exception):
     pass
+
 
 class ResourceNotFoundException(Exception):
     pass
@@ -20,7 +24,7 @@ errors = {
     },
     "NotFound": {
         "message": "Not Found",
-        "status" : 404
+        "status": 404
     },
     "UserExistsException": {
         "message": "User with this email already exists",
@@ -36,7 +40,7 @@ errors = {
     },
     "MethodNotAllowed": {
         "message": "Method not allowed",
-        "status" : 405
+        "status": 405
     },
     "LoginRequiredException": {
         "message": "You need to be logged in to access this resource",

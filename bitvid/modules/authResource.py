@@ -19,11 +19,11 @@ class AuthResource(restful.Resource):
         parser.add_argument('password', required=True, type=str)
         args = parser.parse_args()
 
-        user = User.query.filter_by(email = args["email"]).first()
+        user = User.query.filter_by(email=args["email"]).first()
 
         if not user:
             raise UserNotFoundException()
-        
+
         if not user.check_password(args["password"]):
             raise IncorrectCredentialsException()
 
@@ -31,6 +31,7 @@ class AuthResource(restful.Resource):
         request.session.user = user
 
         return request.session
+
 
 class CounterResource(restful.Resource):
     # counter for testing purposes
