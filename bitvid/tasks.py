@@ -13,15 +13,16 @@ def make_celery(app):
     return celery
 
 from baseapp import app as flask_app
+from models.Video import Video
+from shared import db
 
 celery = make_celery(flask_app)
+db.init_app(flask_app)
 
-import time
-@celery.task()
-def add_together(a, b):
-    res = a + b
 
-    time.sleep(5)
-    flask_app.logger.info("celery calculated %i" %res)
-
-    return res
+@celery.task(name="process_video")
+def process_video(videotoken):
+    from modules.videoResource import Video
+    video = Video.query.filter_by(token = videotoken).first()
+    flask_app.logger.info("converting %s"%video)
+    return video.title
