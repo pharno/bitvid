@@ -34,3 +34,10 @@ class Video(db.Model):
 
     def __repr__(self):
         return '<video %r>' % self.title
+
+class ConvertedVideo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    original_id = db.Column(db.Integer, ForeignKey("video.id"))
+    original = relationship("Video", backref=backref("convertedVideos"))
+    height = db.Column(db.Integer)
+    codec = db.Column(db.String(8))
