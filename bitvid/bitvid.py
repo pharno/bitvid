@@ -61,5 +61,8 @@ authResource.register(api)
 from modules import videoResource
 videoResource.register(api)
 
+if app.environment == "Test":
+    init_db()
+    
 if __name__ == '__main__':
     app.run()
