@@ -44,10 +44,10 @@ codec_mime_mapping = {
 def process_video(videotoken):
     for height in VideoHeights:
         for codec in VideoCodecs:
-            transcode(videotoken, height, codec)
+            transcode_video.delay(videotoken, height, codec)
 
-
-def transcode(videotoken, height, codec):
+@celery.task(name="transcode_video")
+def transcode_video(videotoken, height, codec):
     try:
         arguments = codecmapping[codec]
     except KeyError:
