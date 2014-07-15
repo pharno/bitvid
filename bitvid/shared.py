@@ -28,6 +28,9 @@ def videofile_original_location(token, extention):
         "VIDEO_STORE_PATH"] + current_app.config["VIDEO_ORIGINALS_PATH"] + token + "." + extention
 
 
-def videofile_converted_location(token, size, extention):
+def videofile_converted_location(token, height, extention):
     return current_app.config["VIDEO_STORE_PATH"] + current_app.config[
-        "VIDEO_CONVERTED_PATH"] + token + "_" + str(size) + "." + extention
+        "VIDEO_CONVERTED_PATH"] + token + "_" + str(height) + "." + extention
+
+def videofile_webserver_path(token,height,extention):
+    return "/videos/"+token + "_" + str(height) + "." + extention

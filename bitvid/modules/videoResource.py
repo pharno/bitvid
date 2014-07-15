@@ -1,10 +1,10 @@
 
 from flask.ext import restful
 from flask.ext.restful import reqparse, fields, marshal_with
-from flask import request, current_app
+from flask import request, current_app, redirect
 
 
-from bitvid.shared import db, generate_token, login_required, videofile_original_location
+from bitvid.shared import db, generate_token, login_required, videofile_webserver_path
 from bitvid.errors import ResourceNotFoundException
 from bitvid.tasks import process_video
 
@@ -68,6 +68,9 @@ class VideoResource(restful.Resource):
         return video
 
 
+    def get(selr, videoID, ext, height):
+        return redirect(videofile_webserver_path(videoID,height,ext))
+
 def register(api):
     api.add_resource(VideoCollectionResource, "/video/")
-    api.add_resource(VideoResource, "/video/<string:videoID>")
+    api.add_resource(VideoResource, "/video/<string:videoID>", "/video/<string:videoID>/<string:ext>/<int:height>")
