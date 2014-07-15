@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy import ForeignKey
 
 from flask.ext.restful import fields
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class User(db.Model):

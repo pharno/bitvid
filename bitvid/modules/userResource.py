@@ -1,6 +1,5 @@
 __author__ = 'pharno'
 
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask.ext import restful
 from flask.ext.restful import reqparse, fields, marshal_with
 from sqlalchemy.orm import relationship, backref

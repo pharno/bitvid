@@ -1,4 +1,5 @@
-from bitvid.shared import db
+from bitvid.shared import db, generate_token, login_required, videofile_original_location
+
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import ForeignKey
 
