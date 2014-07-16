@@ -16,7 +16,7 @@ def make_celery(app):
     return celery
 
 from baseapp import app as flask_app
-from models.Video import Video
+from models.Video import Video, ConvertedVideo
 from shared import db, videofile_original_location, videofile_converted_location
 from Media import Media
 
@@ -89,3 +89,8 @@ def transcode_video(videotoken, height, codec):
 
     print cmd
     subprocess.call(cmd)
+
+    convertedVideoModel = ConvertedVideo(video, height, codec_mime_mapping[codec])
+
+    db.session.add(convertedVideoModel)
+    db.session.commit()
