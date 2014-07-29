@@ -1,5 +1,6 @@
 __author__ = 'pharno'
 
+from nose.tools import assert_raises
 from BaseTest import BaseTest
 
 class AuthTest(BaseTest):
