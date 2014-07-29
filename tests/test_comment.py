@@ -1,5 +1,6 @@
 
 from BaseTest import BaseTest
+from unittest import TestCase as test
 
 class AuthTest(BaseTest):
     email = "testmail@local.bitvid.tv"
@@ -23,16 +24,20 @@ class AuthTest(BaseTest):
         returndata = self.client.comment(self.firstTitle,self.firstContent,self.videoToken)
         assert returndata != None
 
+    def _send_and_get_comment(self,title,content,videoToken):
+        token = self.client.comment(title,content,videoToken)
+
+        returndata = self.client.getComment(token)
+        print "got returndata", returndata
+        assert returndata["title"] == title
+        assert returndata["content"] == content
+        assert returndata["author"] == self.email
+
+        return True
+
+    def test_getComment(self):
+        assert self._send_and_get_comment(self.firstTitle,self.firstContent,self.videoToken)
+
     def test_multipleComments(self):
-        returndata = self.client.comment(self.firstTitle,self.firstContent,self.videoToken)
-        assert returndata != None
-
-        returndata = self.client.comment(self.secondTitle,self.secondContent,self.videoToken)
-        assert returndata != None
-
-    def test_treeComments(self):
-        returndata = self.client.comment(self.firstTitle,self.firstContent,self.videoToken)
-        assert returndata != None
-
-        returndata = self.client.comment(self.secondTitle,self.secondContent,self.videoToken, returndata)
-        assert returndata != None
+        assert self._send_and_get_comment(self.firstTitle,self.firstContent,self.videoToken)
+        assert self._send_and_get_comment(self.secondTitle,self.secondContent,self.videoToken)
