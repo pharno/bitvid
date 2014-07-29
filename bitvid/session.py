@@ -54,11 +54,9 @@ class Session(db.Model, SessionMixin):
         db.session.commit()
 
     def __getitem__(self, key):
-        print "session.__getitem__({})".format(key)
         return self.data[key]
 
     def __setitem__(self, key, value):
-        print "session.__setitem__({},{})".format(key, value)
         newdata = self.data.copy()
         newdata[key] = value
 
@@ -66,10 +64,7 @@ class Session(db.Model, SessionMixin):
         self.modified = True
         self.should_save = True
 
-        print repr(self._data)
-
     def __delitem__(self, key):
-        print "session.__delitem__({})".format(key)
         del self.data[key]
 
     def __repr__(self):
@@ -95,6 +90,3 @@ class DBSessionInterface(SessionInterface):
         # if no token was sent or the session not found
         if request.session is None:
             request.session = Session(user=None)
-
-    def save_session(self, app, session, response):
-        print "saaaaaving", session
