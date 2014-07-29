@@ -46,6 +46,7 @@ def process_video(videotoken):
         for codec in VideoCodecs:
             transcode_video.delay(videotoken, height, codec)
 
+
 @celery.task(name="transcode_video")
 def transcode_video(videotoken, height, codec):
     try:
@@ -90,7 +91,10 @@ def transcode_video(videotoken, height, codec):
     print cmd
     subprocess.call(cmd)
 
-    convertedVideoModel = ConvertedVideo(video, height, codec_mime_mapping[codec])
+    convertedVideoModel = ConvertedVideo(
+        video,
+        height,
+        codec_mime_mapping[codec])
 
     db.session.add(convertedVideoModel)
     db.session.commit()

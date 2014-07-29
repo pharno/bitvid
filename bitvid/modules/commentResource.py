@@ -20,20 +20,27 @@ class CommentCollectionResource(restful.Resource):
         parser.add_argument('content', required=True, type=str)
         args = parser.parse_args()
 
-        comment = Comment(args["title"],args["content"],request.session.user,None)
+        comment = Comment(
+            args["title"],
+            args["content"],
+            request.session.user,
+            None)
         db.session.add(comment)
         db.session.commit()
         return comment
 
+
 class CommentResource(restful.Resource):
+
     @marshal_with(Comment.marshal_fields_get)
-    def get(self,token):
+    def get(self, token):
         comment = Comment.query.filter_by(token=token).first()
         if not comment:
             raise NotFound()
 
         else:
             return comment
+
 
 def register(api):
     api.add_resource(CommentCollectionResource, '/comment/')

@@ -4,12 +4,15 @@ from flask.ext.restful import fields
 
 from bitvid.shared import db, generate_token
 
+
 class AuthorField(fields.Raw):
-    def format(self,user):
+
+    def format(self, user):
         return user.email
 
+
 class Comment(db.Model):
-    
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128))
     content = db.Column(db.String(4096))
@@ -31,7 +34,7 @@ class Comment(db.Model):
         "author": AuthorField(attribute="user")
     }
 
-    def __init__(self,title,content,user,video):
+    def __init__(self, title, content, user, video):
         self.title = title
         self.content = content
         self.user = user

@@ -35,6 +35,7 @@ class Video(db.Model):
     def __repr__(self):
         return '<video %r>' % self.title
 
+
 class ConvertedVideo(db.Model):
     marshal_fields = {
         "height": fields.Integer,
@@ -45,7 +46,7 @@ class ConvertedVideo(db.Model):
         self.original = video
         self.height = height
         self.codec = codec
-        
+
     id = db.Column(db.Integer, primary_key=True)
     original_id = db.Column(db.Integer, ForeignKey("video.id"))
     original = relationship("Video", backref=backref("convertedVideos"))

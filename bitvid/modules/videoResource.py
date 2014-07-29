@@ -5,11 +5,12 @@ from flask import request, current_app, redirect
 from flask.ext.restful import fields
 
 
-from bitvid.shared import db, generate_token, login_required, videofile_webserver_path,videofile_original_location
+from bitvid.shared import db, generate_token, login_required, videofile_webserver_path, videofile_original_location
 from bitvid.errors import ResourceNotFoundException
 from bitvid.tasks import process_video
 
-from bitvid.models.Video import Video,ConvertedVideo
+from bitvid.models.Video import Video, ConvertedVideo
+
 
 class VideoCollectionResource(restful.Resource):
 
@@ -67,19 +68,23 @@ class VideoResource(restful.Resource):
         process_video.delay(video.token)
         return video
 
-
-    @marshal_with({"videos":fields.List(fields.Nested(ConvertedVideo.marshal_fields))})
-    def get(self,videoID):
+    @marshal_with(
+        {"videos": fields.List(fields.Nested(ConvertedVideo.marshal_fields))})
+    def get(self, videoID):
         video = Video.query.filter_by(token=videoID).first()
 
-        return {"videos":video.convertedVideos}
+        return {"videos": video.convertedVideos}
 
 
 class VideoMediaResource(restful.Resource):
+
     def get(self, videoID, ext=None, height=None):
-        return redirect(videofile_webserver_path(videoID,height,ext))
+        return redirect(videofile_webserver_path(videoID, height, ext))
+
 
 def register(api):
     api.add_resource(VideoCollectionResource, "/video/")
-    api.add_resource(VideoMediaResource,"/video/<string:videoID>/<string:ext>/<int:height>")
+    api.add_resource(
+        VideoMediaResource,
+        "/video/<string:videoID>/<string:ext>/<int:height>")
     api.add_resource(VideoResource, "/video/<string:videoID>")

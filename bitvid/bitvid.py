@@ -12,7 +12,7 @@ from baseapp import app
 def make_json_error(ex):
     exceptionname = ex.__class__.__name__
     print exceptionname
-    #traceback.print_exc()
+    # traceback.print_exc()
     if exceptionname in errors.keys():
         errordata = errors[exceptionname]
     else:
@@ -31,9 +31,11 @@ def init_db():
     with app.app_context():
         db.create_all()
 
+
 def destroy_db():
     with app.app_context():
         db.drop_all()
+
 
 @request_finished.connect_via(app)
 def save_session(*args, **kwargs):
@@ -68,6 +70,5 @@ from modules import commentResource
 commentResource.register(api)
 
 
-    
 if __name__ == '__main__':
     app.run()

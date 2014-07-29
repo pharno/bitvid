@@ -17,9 +17,10 @@ class IncorrectCredentialsException(Exception):
 class ResourceNotFoundException(Exception):
     pass
 
+
 class NotFound(Exception):
     pass
-    
+
 errors = {
     "Exception": {
         "message": "Internal Server Error",
