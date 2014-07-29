@@ -41,6 +41,7 @@ class BaseTest(unittest.TestCase):
     def tearDown(self):
         os.close(self.db_fd)
         os.unlink(self.db_filename)
+        bitvid.destroy_db()
         """os.kill(self.server_proc.pid, signal.SIGINT)
         self._teardown()"""
 
