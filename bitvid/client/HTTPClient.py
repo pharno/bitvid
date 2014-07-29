@@ -44,8 +44,12 @@ class HTTPClient:
         
         return val
 
-    def _post(self,url,data):
+    def _post(self,url,data={}):
         val = self._request(self.request.post,url,data)
+        return val
+
+    def _get(self,url,data={}):
+        val = self._request(self.request.get,url,data)
         return val
 
     def authenticate(self,email,password):
@@ -55,6 +59,7 @@ class HTTPClient:
           "password" : password
         }
         authdata = self._post("/auth/",logindata)
+        print "authdata", self._json(authdata)
         if authdata.status_code is not 200:
             return False;
         else:
@@ -87,7 +92,17 @@ class HTTPClient:
 
         returndata = self._post("/comment/",commentdata)
 
+        print self._json(returndata)
         return self._json(returndata)["token"]
+
+    def getComment(self,token):
+        print "getting comment with token: "+ token
+
+
+        returndata = self._get("/comment/%s"%token)
+        print "rawreturndata",returndata.data
+        print self._json(returndata)
+        return self._json(returndata)
 
     def _getVideoToken(self,title,description):
         print "getting Video Token: {title}\n{description}".format(title=title,description=description)
