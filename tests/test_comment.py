@@ -21,14 +21,12 @@ class AuthTest(BaseTest):
         self.videoToken = self.client._getVideoToken("title","desc")
 
     def test_singleComment(self):
-        returndata = self.client.comment(self.firstTitle,self.firstContent,self.videoToken)
-        assert returndata != None
+        assert self._send_and_get_comment(self.firstTitle,self.firstContent,self.videoToken)
 
     def _send_and_get_comment(self,title,content,videoToken):
         token = self.client.comment(title,content,videoToken)
 
         returndata = self.client.getComment(token)
-        print "got returndata", returndata
         assert returndata["title"] == title
         assert returndata["content"] == content
         assert returndata["author"] == self.email
@@ -41,3 +39,12 @@ class AuthTest(BaseTest):
     def test_multipleComments(self):
         assert self._send_and_get_comment(self.firstTitle,self.firstContent,self.videoToken)
         assert self._send_and_get_comment(self.secondTitle,self.secondContent,self.videoToken)
+
+    def test_getCommentsForVideo(self):
+        assert self._send_and_get_comment(self.firstTitle,self.firstContent,self.videoToken)
+        assert self._send_and_get_comment(self.secondTitle,self.secondContent,self.videoToken)
+
+        returndata = self.client.getCommentsForVideo(self.videoToken)
+
+        assert len(returndata) == 2
+        assert returndata[1]["title"] == self.firstTitle
