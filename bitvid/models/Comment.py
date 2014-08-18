@@ -17,11 +17,12 @@ class Comment(db.Model):
     title = db.Column(db.String(128))
     content = db.Column(db.String(4096))
     token = db.Column(db.String(128))
-    #parent_id = db.Column(db.Integer, ForeignKey("Comment.id"))
-    #parent = relationship("Comment", backref=backref("children"))
 
     user_id = db.Column(db.Integer, ForeignKey('user.id'))
     user = relationship("User", backref=backref("comments"))
+
+    video_id = db.Column(db.Integer, ForeignKey('video.id'))
+    video = relationship("Video", backref=backref("comments"))
 
     marshal_fields = {
         "token": fields.String,

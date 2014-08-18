@@ -47,4 +47,5 @@ class AuthTest(BaseTest):
         returndata = self.client.getCommentsForVideo(self.videoToken)
 
         assert len(returndata) == 2
-        assert returndata[1]["title"] == self.firstTitle
+        assert returndata["comments"][1]["title"] == self.firstTitle
+        assert returndata["comments"][2]["title"] == self.secondTitle

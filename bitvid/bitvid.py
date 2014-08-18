@@ -11,12 +11,13 @@ from baseapp import app
 
 def make_json_error(ex):
     exceptionname = ex.__class__.__name__
-    print exceptionname
+   
     # traceback.print_exc()
     if exceptionname in errors.keys():
         errordata = errors[exceptionname]
     else:
         errordata = errors["Exception"]
+        traceback.print_exc()
 
     if "message" in errordata.keys():
         response = jsonify(message=str(errordata["message"]))
