@@ -91,7 +91,7 @@ class HTTPClient:
             "parent": parent
         }
 
-        returndata = self._post("/comment/", commentdata)
+        returndata = self._post("/video/{videoToken}/comments".format(videoToken=video), commentdata)
 
         print self._json(returndata)
         return self._json(returndata)["token"]
@@ -115,3 +115,10 @@ class HTTPClient:
         returndata = self._post("/video/", videoTokenData)
 
         return self._json(returndata)["token"]
+
+    def getCommentsForVideo(self,videotoken):
+        print "getting comments for video", videotoken
+
+        returndata = self._get("/video/{videoToken}/comments".format(videoToken=videotoken))
+
+        return self._json(returndata)
