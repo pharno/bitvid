@@ -121,4 +121,4 @@ class HTTPClient:
 
         returndata = self._get("/video/{videoToken}/comments".format(videoToken=videotoken))
 
-        return self._json(returndata)
+        return self._json(returndata["comments"])
