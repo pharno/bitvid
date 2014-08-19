@@ -53,6 +53,10 @@ class HTTPClient:
         val = self._request(self.request.get, url, data)
         return val
 
+    def _delete(self, url, data={}):
+        val = self._request(self.request.delete, url, data)
+        return val
+
     def authenticate(self, email, password):
         print "authenticating {email}:{password}".format(email=email, password=password)
         logindata = {
@@ -122,3 +126,7 @@ class HTTPClient:
         returndata = self._get("/video/{videoToken}/comments".format(videoToken=videotoken))
 
         return self._json(returndata)["comments"]
+
+    def unregister(self,email,password):
+        print "unregistering user", email
+        returndata = self._delete("/user/",{"email":email,"password":password})

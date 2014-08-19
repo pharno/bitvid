@@ -28,6 +28,22 @@ class UserResource(restful.Resource):
         db.session.commit()
         return user
 
+    def delete(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('email', required=True, type=str)
+        parser.add_argument('password', required=True, type=str)
+        args = parser.parse_args()
+
+        user = User.query.filter_by(email=args["email"]).first()
+
+        if not user:
+            raise UserNotFoundException()
+
+        if not user.check_password(args["password"]):
+            raise IncorrectCredentialsException()
+
+        db.session.delete(user)
+        db.session.commit()
 
 def register(api):
     api.add_resource(UserResource, '/user/')
