@@ -24,7 +24,7 @@ class PrdConfig(Config):
 class DevConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///../database.sqlite'
-    #SERVER_NAME = "local.bitvid.tv"
+    # SERVER_NAME = "local.bitvid.tv"
     VIDEO_STORE_PATH = '/opt/bitvid/data/videos/'
 
 

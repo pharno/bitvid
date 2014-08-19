@@ -53,6 +53,14 @@ class HTTPClient:
         val = self._request(self.request.get, url, data)
         return val
 
+    def _delete(self, url, data={}):
+        val = self._request(self.request.delete, url, data)
+        return val
+
+    def _put(self, url, data={}):
+        val = self._request(self.request.put, url, data)
+        return val
+
     def authenticate(self, email, password):
         print "authenticating {email}:{password}".format(email=email, password=password)
         logindata = {
@@ -91,7 +99,8 @@ class HTTPClient:
             "parent": parent
         }
 
-        returndata = self._post("/video/{videoToken}/comments".format(videoToken=video), commentdata)
+        returndata = self._post(
+            "/video/{videoToken}/comments".format(videoToken=video), commentdata)
 
         print self._json(returndata)
         return self._json(returndata)["token"]
@@ -116,9 +125,25 @@ class HTTPClient:
 
         return self._json(returndata)["token"]
 
-    def getCommentsForVideo(self,videotoken):
+    def getCommentsForVideo(self, videotoken):
         print "getting comments for video", videotoken
 
-        returndata = self._get("/video/{videoToken}/comments".format(videoToken=videotoken))
+        returndata = self._get(
+            "/video/{videoToken}/comments".format(videoToken=videotoken))
 
         return self._json(returndata)["comments"]
+
+    def unregister(self, email, password):
+        print "unregistering user", email
+        returndata = self._delete(
+            "/user/", {"email": email, "password": password})
+        return returndata
+
+    def changePassword(self, email, oldpass, newpass):
+        print "changing password for user", email
+        updatedata = {"email": email,
+                      "password": oldpass,
+                      "newpassword": newpass}
+        returndata = self._put("/user/", updatedata)
+
+        return self._json(returndata)

@@ -1,8 +1,5 @@
-from flask import Flask, jsonify, request_finished, request
-from werkzeug.exceptions import default_exceptions
-from werkzeug.exceptions import HTTPException
+from flask import jsonify, request_finished, request
 from shared import db
-import os
 import traceback
 from errors import errors
 
@@ -11,7 +8,7 @@ from baseapp import app
 
 def make_json_error(ex):
     exceptionname = ex.__class__.__name__
-   
+
     # traceback.print_exc()
     if exceptionname in errors.keys():
         errordata = errors[exceptionname]
