@@ -45,5 +45,6 @@ class UserResource(restful.Resource):
         db.session.delete(user)
         db.session.commit()
 
+
 def register(api):
     api.add_resource(UserResource, '/user/')

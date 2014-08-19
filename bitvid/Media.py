@@ -56,7 +56,7 @@ class Media:
         height = int(stream['height'])
         codec = stream['codec_name']
         aspect_ratio = str(width / height)
-        #framerate = float(Fraction(stream['r_frame_rate']))
+        # framerate = float(Fraction(stream['r_frame_rate']))
         return {'duration': duration,
                 'file_size': file_size,
                 'width': width,

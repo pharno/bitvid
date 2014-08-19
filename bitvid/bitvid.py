@@ -11,7 +11,7 @@ from baseapp import app
 
 def make_json_error(ex):
     exceptionname = ex.__class__.__name__
-   
+
     # traceback.print_exc()
     if exceptionname in errors.keys():
         errordata = errors[exceptionname]

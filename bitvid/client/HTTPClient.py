@@ -95,7 +95,8 @@ class HTTPClient:
             "parent": parent
         }
 
-        returndata = self._post("/video/{videoToken}/comments".format(videoToken=video), commentdata)
+        returndata = self._post(
+            "/video/{videoToken}/comments".format(videoToken=video), commentdata)
 
         print self._json(returndata)
         return self._json(returndata)["token"]
@@ -120,13 +121,15 @@ class HTTPClient:
 
         return self._json(returndata)["token"]
 
-    def getCommentsForVideo(self,videotoken):
+    def getCommentsForVideo(self, videotoken):
         print "getting comments for video", videotoken
 
-        returndata = self._get("/video/{videoToken}/comments".format(videoToken=videotoken))
+        returndata = self._get(
+            "/video/{videoToken}/comments".format(videoToken=videotoken))
 
         return self._json(returndata)["comments"]
 
-    def unregister(self,email,password):
+    def unregister(self, email, password):
         print "unregistering user", email
-        returndata = self._delete("/user/",{"email":email,"password":password})
+        returndata = self._delete(
+            "/user/", {"email": email, "password": password})

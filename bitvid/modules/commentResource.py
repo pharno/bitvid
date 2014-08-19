@@ -14,7 +14,7 @@ class CommentCollectionResource(restful.Resource):
 
     @marshal_with(Comment.marshal_fields)
     @login_required
-    def post(self,token):
+    def post(self, token):
         parser = reqparse.RequestParser()
         parser.add_argument('title', required=True, type=str)
         parser.add_argument('content', required=True, type=str)
@@ -31,10 +31,11 @@ class CommentCollectionResource(restful.Resource):
         db.session.commit()
         return comment
 
-    @marshal_with({"comments": fields.List(fields.Nested(Comment.marshal_fields_get))})
-    def get(self,token):
+    @marshal_with(
+        {"comments": fields.List(fields.Nested(Comment.marshal_fields_get))})
+    def get(self, token):
         video = Video.query.filter_by(token=token).first()
-        return {"comments":video.comments}
+        return {"comments": video.comments}
 
 
 class CommentResource(restful.Resource):
@@ -50,5 +51,6 @@ class CommentResource(restful.Resource):
 
 
 def register(api):
-    api.add_resource(CommentCollectionResource, '/video/<string:token>/comments')
+    api.add_resource(
+        CommentCollectionResource, '/video/<string:token>/comments')
     api.add_resource(CommentResource, '/comment/<string:token>')
