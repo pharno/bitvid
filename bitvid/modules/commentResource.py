@@ -31,7 +31,7 @@ class CommentCollectionResource(restful.Resource):
         db.session.commit()
         return comment
 
-    @marshal_with({"comments": fields.List(fields.Nested(Comment.marshal_fields))})
+    @marshal_with({"comments": fields.List(fields.Nested(Comment.marshal_fields_get))})
     def get(self,token):
         video = Video.query.filter_by(token=token).first()
         return {"comments":video.comments}
