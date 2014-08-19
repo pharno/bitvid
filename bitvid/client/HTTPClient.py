@@ -57,6 +57,10 @@ class HTTPClient:
         val = self._request(self.request.delete, url, data)
         return val
 
+    def _put(self, url, data={}):
+        val = self._request(self.request.put, url, data)
+        return val
+
     def authenticate(self, email, password):
         print "authenticating {email}:{password}".format(email=email, password=password)
         logindata = {
@@ -133,3 +137,13 @@ class HTTPClient:
         print "unregistering user", email
         returndata = self._delete(
             "/user/", {"email": email, "password": password})
+        return returndata
+
+    def changePassword(self, email, oldpass, newpass):
+        print "changing password for user", email
+        updatedata = {"email": email,
+                      "password": oldpass,
+                      "newpassword": newpass}
+        returndata = self._put("/user/", updatedata)
+
+        return self._json(returndata)
