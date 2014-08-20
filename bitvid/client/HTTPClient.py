@@ -149,6 +149,17 @@ class HTTPClient:
         return self._json(returndata)
 
     def deleteComment(self, commentToken):
-        print "deleting comment", commentToken
+        print "deleting comment ", commentToken
         returndata = self._delete("/comment/" + commentToken)
+        return self._json(returndata)
+
+    def updateComment(self, token, title, content):
+        print "updating comment ", token
+        commentdata = {
+            "title": title,
+            "content": content
+        }
+
+        returndata = self._put("/comment/"+token, commentdata)
+
         return self._json(returndata)

@@ -7,6 +7,7 @@ from flask.ext.restful import reqparse, fields, marshal_with
 from bitvid.shared import login_required, db
 from bitvid.models import Comment, Video
 from bitvid.errors import NotFound
+from bitvid.lib import Rest
 
 
 class CommentCollectionResource(restful.Resource):
@@ -55,6 +56,15 @@ class CommentResource(restful.Resource):
         db.session.delete(comment)
         db.session.commit()
         return comment
+
+    @marshal_with(Comment.marshal_fields)
+    @login_required
+    def put(self, token):
+        changedComment = Rest.updateModelFromRequest(
+            Comment, {"token": token}, "title", "content")
+        db.session.add(changedComment)
+        db.session.commit()
+        return changedComment
 
 
 def register(api):
