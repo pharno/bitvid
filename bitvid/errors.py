@@ -27,7 +27,7 @@ errors = {
         "status": 500
     },
     "NotFound": {
-        "message": "Not Found",
+        "message": "Could not find the resource you're trying to access",
         "status": 404
     },
     "UserExistsException": {
