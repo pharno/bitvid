@@ -3,11 +3,11 @@ __author__ = 'pharno'
 from flask import request
 from flask.ext import restful
 from flask.ext.restful import reqparse, fields, marshal_with
-from sqlalchemy.orm import relationship, backref
 
 from bitvid.shared import login_required, db
 from bitvid.models import Comment, Video
 from bitvid.errors import NotFound
+from bitvid.lib import Rest
 
 
 class CommentCollectionResource(restful.Resource):
@@ -48,6 +48,23 @@ class CommentResource(restful.Resource):
 
         else:
             return comment
+
+    @marshal_with(Comment.marshal_fields)
+    @login_required
+    def delete(self, token):
+        comment = Comment.query.filter_by(token=token).first()
+        db.session.delete(comment)
+        db.session.commit()
+        return comment
+
+    @marshal_with(Comment.marshal_fields)
+    @login_required
+    def put(self, token):
+        changedComment = Rest.updateModelFromRequest(
+            Comment, {"token": token}, "title", "content")
+        db.session.add(changedComment)
+        db.session.commit()
+        return changedComment
 
 
 def register(api):
