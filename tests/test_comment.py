@@ -1,5 +1,6 @@
 
 from BaseTest import BaseTest
+from bitvid import errors
 
 
 class AuthTest(BaseTest):
@@ -53,3 +54,20 @@ class AuthTest(BaseTest):
         assert len(returndata) == 2
         assert returndata[0]["title"] == self.firstTitle
         assert returndata[1]["title"] == self.secondTitle
+
+    def test_deleteComment(self):
+        token = self.client.comment(
+            self.firstTitle, self.firstContent, self.videoToken)
+
+        returndata = self.client.getComment(token)
+        assert returndata["title"] == self.firstTitle
+        assert returndata["content"] == self.firstContent
+        assert returndata["author"] == self.email
+
+        deletedata = self.client.deleteComment(token)
+
+        assert deletedata["token"] == token
+
+        returndata = self.client.getComment(token)
+        print returndata
+        assert returndata["message"] == errors.errors["NotFound"]["message"]
