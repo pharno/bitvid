@@ -1,6 +1,6 @@
 
 from BaseTest import BaseTest
-from unittest import TestCase as test
+
 
 class AuthTest(BaseTest):
     email = "testmail@local.bitvid.tv"
@@ -9,22 +9,21 @@ class AuthTest(BaseTest):
     firstTitle = "firstTitle"
     firstContent = "this is some content for the first comment"
 
-
     secondTitle = "secondTitle"
     secondContent = "this is some content for the second comment"
 
-
     def _setup(self):
-        self.client.register(self.email,self.password)
-        self.client.authenticate(self.email,self.password)
+        self.client.register(self.email, self.password)
+        self.client.authenticate(self.email, self.password)
 
-        self.videoToken = self.client._getVideoToken("title","desc")
+        self.videoToken = self.client._getVideoToken("title", "desc")
 
     def test_singleComment(self):
-        assert self._send_and_get_comment(self.firstTitle,self.firstContent,self.videoToken)
+        assert self._send_and_get_comment(
+            self.firstTitle, self.firstContent, self.videoToken)
 
-    def _send_and_get_comment(self,title,content,videoToken):
-        token = self.client.comment(title,content,videoToken)
+    def _send_and_get_comment(self, title, content, videoToken):
+        token = self.client.comment(title, content, videoToken)
 
         returndata = self.client.getComment(token)
         assert returndata["title"] == title
@@ -34,15 +33,20 @@ class AuthTest(BaseTest):
         return True
 
     def test_getComment(self):
-        assert self._send_and_get_comment(self.firstTitle,self.firstContent,self.videoToken)
+        assert self._send_and_get_comment(
+            self.firstTitle, self.firstContent, self.videoToken)
 
     def test_multipleComments(self):
-        assert self._send_and_get_comment(self.firstTitle,self.firstContent,self.videoToken)
-        assert self._send_and_get_comment(self.secondTitle,self.secondContent,self.videoToken)
+        assert self._send_and_get_comment(
+            self.firstTitle, self.firstContent, self.videoToken)
+        assert self._send_and_get_comment(
+            self.secondTitle, self.secondContent, self.videoToken)
 
     def test_getCommentsForVideo(self):
-        assert self._send_and_get_comment(self.firstTitle,self.firstContent,self.videoToken)
-        assert self._send_and_get_comment(self.secondTitle,self.secondContent,self.videoToken)
+        assert self._send_and_get_comment(
+            self.firstTitle, self.firstContent, self.videoToken)
+        assert self._send_and_get_comment(
+            self.secondTitle, self.secondContent, self.videoToken)
 
         returndata = self.client.getCommentsForVideo(self.videoToken)
 
