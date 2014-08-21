@@ -1,11 +1,10 @@
 
 from flask.ext import restful
 from flask.ext.restful import reqparse, fields, marshal_with
-from flask import request, current_app, redirect
-from flask.ext.restful import fields
+from flask import request, redirect
 
 
-from bitvid.shared import db, generate_token, login_required, videofile_webserver_path, videofile_original_location
+from bitvid.shared import db, login_required, videofile_webserver_path, videofile_original_location
 from bitvid.errors import ResourceNotFoundException
 from bitvid.tasks import process_video
 

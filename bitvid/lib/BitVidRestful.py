@@ -2,13 +2,11 @@ import traceback
 from flask import jsonify
 from flask.ext import restful
 
-from flask.ext.restful import marshal_with, reqparse
+from flask.ext.restful import reqparse
 
 
 from bitvid.errors import errors, NotFound
-from bitvid.lib import Rest
-from bitvid.models import Comment
-from bitvid.shared import login_required, db
+from bitvid.shared import db
 
 
 def make_json_error(ex):
@@ -60,19 +58,19 @@ class BitVidRestResource(restful.Resource):
         db.session.commit()
         return changedmodel
 
-    def _updateModelFromRequest(self,modelType, searchCriterias, fieldsToUpdate):
-	    parser = reqparse.RequestParser()
-	    for field in fieldsToUpdate:
-	        parser.add_argument(field, required=False, type=str)
-	    args = parser.parse_args()
+    def _updateModelFromRequest(self, modelType, searchCriterias, fieldsToUpdate):
+        parser = reqparse.RequestParser()
+        for field in fieldsToUpdate:
+            parser.add_argument(field, required=False, type=str)
+        args = parser.parse_args()
 
-	    print "found args to update: ", args, "updateFields=", fieldsToUpdate
+        print "found args to update: ", args, "updateFields=", fieldsToUpdate
 
-	    model = modelType.query.filter_by(**searchCriterias).first()
+        model = modelType.query.filter_by(**searchCriterias).first()
 
-	    for field in fieldsToUpdate:
-	        print field, field in args
-	        if field in args.keys():
-	            setattr(model, field, args[field])
+        for field in fieldsToUpdate:
+            print field, field in args
+            if field in args.keys():
+                setattr(model, field, args[field])
 
-	    return model
+        return model
