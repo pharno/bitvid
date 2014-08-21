@@ -1,28 +1,8 @@
-from flask import jsonify, request_finished, request
+from flask import request_finished, request
+
 from shared import db
-import traceback
-from errors import errors
-
 from baseapp import app
-
-
-def make_json_error(ex):
-    exceptionname = ex.__class__.__name__
-
-    # traceback.print_exc()
-    if exceptionname in errors.keys():
-        errordata = errors[exceptionname]
-    else:
-        errordata = errors["Exception"]
-        traceback.print_exc()
-
-    if "message" in errordata.keys():
-        response = jsonify(message=str(errordata["message"]))
-
-    if "status" in errordata.keys():
-        response.status_code = errordata["status"]
-
-    return response
+from lib.BitVidRestful import BitVidRestful
 
 
 def init_db():
@@ -42,15 +22,6 @@ def save_session(*args, **kwargs):
 
 db.app = app
 db.init_app(app)
-
-
-from flask.ext import restful
-
-
-class BitVidRestful(restful.Api):
-
-    def handle_error(self, ex):
-        return make_json_error(ex)
 
 
 api = BitVidRestful(app, catch_all_404s=True)
