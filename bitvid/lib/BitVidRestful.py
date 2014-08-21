@@ -2,7 +2,7 @@ import traceback
 from flask import jsonify
 from flask.ext import restful
 
-from flask.ext.restful import marshal_with
+from flask.ext.restful import marshal_with, reqparse
 
 
 from bitvid.errors import errors, NotFound
@@ -54,8 +54,25 @@ class BitVidRestResource(restful.Resource):
         return deletedmodel
 
     def _put(self, **kwargs):
-        changedmodel = Rest.updateModelFromRequest(
-            self.baseModel, kwargs, *self.updatefields)
+        changedmodel = self._updateModelFromRequest(
+            self.baseModel, kwargs, self.updatefields)
         db.session.add(changedmodel)
         db.session.commit()
         return changedmodel
+
+    def _updateModelFromRequest(self,modelType, searchCriterias, fieldsToUpdate):
+	    parser = reqparse.RequestParser()
+	    for field in fieldsToUpdate:
+	        parser.add_argument(field, required=False, type=str)
+	    args = parser.parse_args()
+
+	    print "found args to update: ", args, "updateFields=", fieldsToUpdate
+
+	    model = modelType.query.filter_by(**searchCriterias).first()
+
+	    for field in fieldsToUpdate:
+	        print field, field in args
+	        if field in args.keys():
+	            setattr(model, field, args[field])
+
+	    return model
