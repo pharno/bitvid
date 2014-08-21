@@ -8,7 +8,6 @@ def updateModelFromRequest(modelType, searchCriterias, *updateFields):
     args = parser.parse_args()
 
     print "found args to update: ", args, "updateFields=", updateFields
-    print "yoooooooooooo"
 
     model = modelType.query.filter_by(**searchCriterias).first()
 
@@ -17,5 +16,4 @@ def updateModelFromRequest(modelType, searchCriterias, *updateFields):
         if field in args.keys():
             setattr(model, field, args[field])
 
-    print "yo"
     return model
