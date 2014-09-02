@@ -110,7 +110,7 @@ class HTTPClient:
             "/video/{videoToken}/comments".format(videoToken=video), commentdata)
 
         print self._json(returndata)
-        return self._json(returndata)["token"]
+        return self._json(returndata)
 
     def getComment(self, token):
         print "getting comment with token: " + token

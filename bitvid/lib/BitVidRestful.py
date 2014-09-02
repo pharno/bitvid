@@ -1,11 +1,11 @@
 import traceback
-from flask import jsonify
+from flask import jsonify, request
 from flask.ext import restful
 
 from flask.ext.restful import reqparse
 
 
-from bitvid.errors import errors, NotFound
+from bitvid.errors import errors, NotFound, PermissionDenied
 from bitvid.shared import db
 
 
@@ -47,6 +47,10 @@ class BitVidRestResource(restful.Resource):
 
     def _delete(self, **kwargs):
         deletedmodel = self.baseModel.query.filter_by(**kwargs).first()
+
+        if deletedmodel.user != request.session.user:
+            raise PermissionDenied
+
         db.session.delete(deletedmodel)
         db.session.commit()
         return deletedmodel
@@ -54,6 +58,10 @@ class BitVidRestResource(restful.Resource):
     def _put(self, **kwargs):
         changedmodel = self._updateModelFromRequest(
             self.baseModel, kwargs, self.updatefields)
+        
+        if changedmodel.user != request.session.user:
+           raise PermissionDenied
+
         db.session.add(changedmodel)
         db.session.commit()
         return changedmodel
