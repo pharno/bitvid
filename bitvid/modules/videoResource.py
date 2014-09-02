@@ -48,7 +48,7 @@ class VideoResource(BitVidRestful.BitVidRestResource):
         video = Video.query.filter_by(token=videoID).first()
         if video.user is not request.session.user:
             raise PermissionDenied
-            
+
         if not video:
             raise ResourceNotFoundException()
 
@@ -88,8 +88,6 @@ class VideoResource(BitVidRestful.BitVidRestResource):
             raise PermissionDenied
 
         return self._updateModelFromRequest(self.baseModel, {"token":videoID}, self.updatefields)
-
-
 
 
 class VideoMediaResource(restful.Resource):

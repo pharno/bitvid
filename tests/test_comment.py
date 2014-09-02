@@ -29,7 +29,7 @@ class AuthTest(BaseTest):
     def _send_and_get_comment(self, title, content, videoToken):
         token = self.client.comment(title, content, videoToken)
 
-        returndata = self.client.getComment(token)
+        returndata = self.client.getComment(token["token"])
         assert returndata["title"] == title
         assert returndata["content"] == content
         assert returndata["author"] == self.email
@@ -60,7 +60,7 @@ class AuthTest(BaseTest):
 
     def test_deleteComment(self):
         token = self.client.comment(
-            self.firstTitle, self.firstContent, self.videoToken)
+            self.firstTitle, self.firstContent, self.videoToken)["token"]
 
         returndata = self.client.getComment(token)
         assert returndata["title"] == self.firstTitle
@@ -77,7 +77,7 @@ class AuthTest(BaseTest):
 
     def test_updateComement(self):
         token = self.client.comment(
-            self.firstTitle, self.firstContent, self.videoToken)
+            self.firstTitle, self.firstContent, self.videoToken)["token"]
 
         returndata = self.client.getComment(token)
         assert returndata["title"] == self.firstTitle
@@ -92,4 +92,91 @@ class AuthTest(BaseTest):
         print "returndata update", returndata
         assert returndata["title"] == self.firstTitleChanged
         assert returndata["content"] == self.firstContentChanged
+        assert returndata["author"] == self.email
+
+    def test_commentUnauthorized(self):
+        self.client.authtoken = None
+        unauthData = self.client.comment(self.firstTitle, self.firstContent, self.videoToken)
+
+        assert unauthData["message"] == errors.errors["LoginRequiredException"]["message"]
+
+    def test_updateCommentUnauthorized(self):
+        token = self.client.comment(
+            self.firstTitle, self.firstContent, self.videoToken)["token"]
+
+        returndata = self.client.getComment(token)
+        assert returndata["title"] == self.firstTitle
+        assert returndata["content"] == self.firstContent
+        assert returndata["author"] == self.email
+
+        self.client.authtoken = None
+
+        returndata = self.client.updateComment(
+            token, self.firstTitleChanged, self.firstContentChanged)
+
+
+        assert returndata["message"] == errors.errors["LoginRequiredException"]["message"]
+
+
+    def test_updateCommentWrongUser(self):
+        token = self.client.comment(
+            self.firstTitle, self.firstContent, self.videoToken)["token"]
+
+        returndata = self.client.getComment(token)
+        assert returndata["title"] == self.firstTitle
+        assert returndata["content"] == self.firstContent
+        assert returndata["author"] == self.email
+
+        self.client.authtoken = None
+
+        self.client.register("other"+self.email, self.password)
+        self.client.authenticate("other"+self.email, self.password)
+
+        returndata = self.client.updateComment(
+            token, self.firstTitleChanged, self.firstContentChanged)
+
+
+        assert returndata["message"] == errors.errors["PermissionDenied"]["message"]
+
+
+    def test_deleteCommentUnauthorized(self):
+        token = self.client.comment(
+            self.firstTitle, self.firstContent, self.videoToken)["token"]
+
+        returndata = self.client.getComment(token)
+        assert returndata["title"] == self.firstTitle
+        assert returndata["content"] == self.firstContent
+        assert returndata["author"] == self.email
+
+        self.client.authtoken = None
+
+        deletedata = self.client.deleteComment(token)
+
+        assert deletedata["message"] == errors.errors["LoginRequiredException"]["message"]
+
+        returndata = self.client.getComment(token)
+
+        assert returndata["title"] == self.firstTitle
+        assert returndata["content"] == self.firstContent
+        assert returndata["author"] == self.email
+
+    def test_deleteCommentWrongUser(self):
+        token = self.client.comment(
+            self.firstTitle, self.firstContent, self.videoToken)["token"]
+
+        returndata = self.client.getComment(token)
+        assert returndata["title"] == self.firstTitle
+        assert returndata["content"] == self.firstContent
+        assert returndata["author"] == self.email
+
+        self.client.register("other"+self.email, self.password)
+        self.client.authenticate("other"+self.email, self.password)
+        deletedata = self.client.deleteComment(token)
+
+        assert deletedata["message"] == errors.errors["PermissionDenied"]["message"]
+
+        returndata = self.client.getComment(token)
+
+        assert returndata["title"] == self.firstTitle
+        assert returndata["content"] == self.firstContent
         assert returndata["author"] == self.email

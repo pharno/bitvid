@@ -35,3 +35,21 @@ class VideoTest(BaseTest):
 
         assert update["title"] == self.secondTitle
         assert update["description"] == self.secondDescription
+
+    def test_uploadVideoUnauthenticated(self):
+        self.client.authtoken = None
+        vid = open(self.videoFile, "r")
+        vidret = self.client.uploadVideo(self.videoToken, vid)
+
+        assert "message" in vidret.keys()
+        assert vidret["message"] == errors.errors["LoginRequiredException"]["message"]
+
+    def test_uploadVideoWrongUser(self):
+        self.client.register("other"+self.email, self.password)
+        self.client.authenticate("other"+self.email, self.password)
+
+        vid = open(self.videoFile, "r")
+        vidret = self.client.uploadVideo(self.videoToken, vid)
+
+        assert "message" in vidret.keys()
+        assert vidret["message"] == errors.errors["PermissionDenied"]["message"]
