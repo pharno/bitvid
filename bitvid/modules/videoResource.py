@@ -1,14 +1,15 @@
 
 from flask.ext import restful
 from flask.ext.restful import reqparse, fields, marshal_with
-from flask import request, redirect
+from flask import request, redirect, current_app
 
 
-from bitvid.shared import db, login_required, videofile_webserver_path, videofile_original_location
-from bitvid.errors import ResourceNotFoundException
+from bitvid.shared import db, login_required, videofile_webserver_path, videofile_original_location, make_sure_path_exists
+from bitvid.errors import ResourceNotFoundException, PermissionDenied
 from bitvid.tasks import process_video
 
 from bitvid.models.Video import Video, ConvertedVideo
+from bitvid.lib import BitVidRestful
 
 
 class VideoCollectionResource(restful.Resource):
@@ -37,13 +38,17 @@ class VideoCollectionResource(restful.Resource):
         return newvideo
 
 
-class VideoResource(restful.Resource):
+class VideoResource(BitVidRestful.BitVidRestResource):
+    updatefields = ["title", "description"]
+    baseModel = Video
 
     @marshal_with(Video.marshal_fields)
     @login_required
     def put(self, videoID):
         video = Video.query.filter_by(token=videoID).first()
-
+        if video.user is not request.session.user:
+            raise PermissionDenied
+            
         if not video:
             raise ResourceNotFoundException()
 
@@ -57,12 +62,13 @@ class VideoResource(restful.Resource):
         mimetype = args["Content-Type"].split("/")[1].strip(".")
         video.originalmime = mimetype
 
-        db.session.add(video)
-        db.session.commit()
-
+        make_sure_path_exists(current_app.config["VIDEO_STORE_PATH"] + current_app.config["VIDEO_ORIGINALS_PATH"])
         filelocation = videofile_original_location(videoID, mimetype)
         originalvideofile = open(filelocation, "wb")
         originalvideofile.write(request.data)
+
+        db.session.add(video)
+        db.session.commit()
 
         process_video.delay(video.token)
         return video
@@ -73,6 +79,17 @@ class VideoResource(restful.Resource):
         video = Video.query.filter_by(token=videoID).first()
 
         return {"videos": video.convertedVideos}
+
+    @login_required
+    @marshal_with(Video.marshal_fields)
+    def post(self, videoID):
+        video = Video.query.filter_by(token=videoID).first()
+        if video.user is not request.session.user:
+            raise PermissionDenied
+
+        return self._updateModelFromRequest(self.baseModel, {"token":videoID}, self.updatefields)
+
+
 
 
 class VideoMediaResource(restful.Resource):
