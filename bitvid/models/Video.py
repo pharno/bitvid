@@ -21,7 +21,7 @@ class Video(db.Model):
     }
 
     marshal_fields = {
-        "id": fields.Integer,
+        "token": fields.String,
         "title": fields.String,
         "description": fields.String
     }

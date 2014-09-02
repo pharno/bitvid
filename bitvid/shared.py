@@ -1,6 +1,9 @@
 __author__ = 'pharno'
 
 import base64
+import os
+import errno
+
 from uuid import uuid4
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask import request, current_app
@@ -35,3 +38,12 @@ def videofile_converted_location(token, height, extention):
 
 def videofile_webserver_path(token, height, extention):
     return "/videos/" + token + "_" + str(height) + "." + extention
+
+
+
+def make_sure_path_exists(path):
+    try:
+        os.makedirs(path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise

@@ -21,6 +21,10 @@ class ResourceNotFoundException(Exception):
 class NotFound(Exception):
     pass
 
+
+class PermissionDenied(Exception):
+    pass
+
 errors = {
     "Exception": {
         "message": "Internal Server Error",
@@ -53,5 +57,9 @@ errors = {
     "ResourceNotFoundException": {
         "message": "Could not find the resource you're trying to access",
         "status": 404
+    },
+    "PermissionDenied": {
+        "message": "You do not have permission to access this Resource",
+        "status": 401
     }
 }

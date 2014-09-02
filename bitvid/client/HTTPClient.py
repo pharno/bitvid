@@ -27,7 +27,14 @@ class HTTPClient:
 
         fullurl = self.baseurl + url
         print fullurl
-        val = op(fullurl, data=json.dumps(data), headers=headers)
+
+        dataencoded = None
+        if isinstance(data,dict):
+            dataencoded = json.dumps(data)
+        else:
+            dataencoded = data
+
+        val = op(fullurl, data=dataencoded, headers=headers)
         responsecode = None
         if val.__class__.__name__ == "Response":  # flask test app
             responsecode = val.status
@@ -162,4 +169,16 @@ class HTTPClient:
 
         returndata = self._put("/comment/"+token, commentdata)
 
+        return self._json(returndata)
+
+    def updateVideo(self, token, title, description):
+        updateData = {
+            "title": title,
+            "description": description
+        }
+        returndata = self._post("/video/"+token, updateData)
+        return self._json(returndata)
+
+    def uploadVideo(self, token, videoFile):
+        returndata = self._put("/video/"+token, videoFile.read())
         return self._json(returndata)
