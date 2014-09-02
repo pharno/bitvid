@@ -42,8 +42,6 @@ class VideoTest(BaseTest):
         vidret = self.client.uploadVideo(self.videoToken, vid)
 
         assert "message" in vidret.keys()
-        print vidret["message"]
-        print errors.errors["PermissionDenied"]["message"]
         assert vidret["message"] == errors.errors["LoginRequiredException"]["message"]
 
     def test_uploadVideoWrongUser(self):
@@ -54,5 +52,4 @@ class VideoTest(BaseTest):
         vidret = self.client.uploadVideo(self.videoToken, vid)
 
         assert "message" in vidret.keys()
-        print vidret["message"] == errors.errors["PermissionDenied"]["message"]
         assert vidret["message"] == errors.errors["PermissionDenied"]["message"]
