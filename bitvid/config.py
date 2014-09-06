@@ -16,8 +16,8 @@ class Config(object):
 
 
 class PrdConfig(Config):
-    # /videos on the bitvid s3 bucket for permanent storage
     SQLALCHEMY_DATABASE_URI = 'mysql://user@localhost/foo'
+    # /videos on the bitvid s3 bucket for permanent storage
     VIDEO_STORE_PATH = '/opt/bitvid/data/videos/'
 
 
