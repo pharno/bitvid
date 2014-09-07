@@ -13,6 +13,8 @@ class Config(object):
     CELERY_ACCEPT_CONTENT = [CELERY_SERIALIZER]
     CELERY_TASK_SERIALIZER = CELERY_SERIALIZER
     CELERY_RESULT_SERIALIZER = CELERY_SERIALIZER
+    ELASTICSEARCH_URL = "http://localhost:9200/"
+    ELASTICSEARCH_INDEX = "bitvid"
 
 
 class PrdConfig(Config):
@@ -31,3 +33,4 @@ class DevConfig(Config):
 class TestConfig(DevConfig):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
+    ELASTICSEARCH_INDEX = "bitvid-unittest"

@@ -1,7 +1,9 @@
-from bitvid.shared import db, generate_token, login_required, videofile_original_location
+from bitvid.shared import db, generate_token, login_required, videofile_original_location, get_es, get_es_index
 
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import ForeignKey
+from sqlalchemy import event
+
 
 from flask.ext.restful import fields
 
@@ -34,6 +36,23 @@ class Video(db.Model):
 
     def __repr__(self):
         return '<video %r>' % self.title
+
+
+def index_video(mapper, connection, target):
+
+    toindex = {
+        "id": target.id,
+        "title": target.title,
+        "description": target.description,
+        "mime": target.originalmime,
+        "user_id": target.user_id,
+        "user_name": target.user.email
+    }
+    get_es().index(get_es_index(), target.__class__.__name__, toindex, id=target.token)
+
+
+event.listen(Video, 'after_insert', index_video)
+event.listen(Video, 'after_update', index_video)
 
 
 class ConvertedVideo(db.Model):

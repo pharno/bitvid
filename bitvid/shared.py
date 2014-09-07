@@ -13,6 +13,16 @@ from errors import LoginRequiredException
 db = SQLAlchemy()
 
 
+def get_es():
+    from pyelasticsearch import ElasticSearch
+    elasticsearch = ElasticSearch(current_app.config["ELASTICSEARCH_URL"])
+    return elasticsearch
+
+
+def get_es_index():
+    return current_app.config["ELASTICSEARCH_INDEX"]
+
+
 def generate_token():
     return str(uuid4())
 

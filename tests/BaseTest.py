@@ -12,6 +12,7 @@ import signal
 import time
 import tempfile
 from bitvid import bitvid
+from bitvid.shared import get_es, get_es_index
 
 from bitvid.client.HTTPClient import HTTPClient
 
@@ -39,6 +40,12 @@ class BaseTest(unittest.TestCase):
         pass
 
     def tearDown(self):
+        with bitvid.app.app_context():
+            try:
+                get_es().delete_index(get_es_index())
+            except:
+                pass
+
         os.close(self.db_fd)
         os.unlink(self.db_filename)
         bitvid.destroy_db()
