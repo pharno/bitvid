@@ -38,6 +38,8 @@ videoResource.register(api)
 from modules import commentResource
 commentResource.register(api)
 
+from modules import searchModule
+searchModule.register(api)
 
 if __name__ == '__main__':
     app.run()

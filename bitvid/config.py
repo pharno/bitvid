@@ -13,11 +13,13 @@ class Config(object):
     CELERY_ACCEPT_CONTENT = [CELERY_SERIALIZER]
     CELERY_TASK_SERIALIZER = CELERY_SERIALIZER
     CELERY_RESULT_SERIALIZER = CELERY_SERIALIZER
+    ELASTICSEARCH_URL = "http://localhost:9200/"
+    ELASTICSEARCH_INDEX = "bitvid"
 
 
 class PrdConfig(Config):
-    # /videos on the bitvid s3 bucket for permanent storage
     SQLALCHEMY_DATABASE_URI = 'mysql://user@localhost/foo'
+    # /videos on the bitvid s3 bucket for permanent storage
     VIDEO_STORE_PATH = '/opt/bitvid/data/videos/'
 
 
@@ -31,3 +33,4 @@ class DevConfig(Config):
 class TestConfig(DevConfig):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
+    ELASTICSEARCH_INDEX = "bitvid-unittest"
