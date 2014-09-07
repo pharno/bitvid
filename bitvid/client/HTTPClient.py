@@ -9,9 +9,10 @@ class HTTPClient:
         self.authtoken = ""
         self.userid = -1
         self.request = clientBase
+        self.testing = clientBase != requests
 
     def _json(self, response):
-        if response.__class__.__name__ == "Response":  # flask test app
+        if self.testing:  # flask test app
             return json.loads(response.data)
         else:
             return response.json()
@@ -36,7 +37,7 @@ class HTTPClient:
 
         val = op(fullurl, data=dataencoded, headers=headers)
         responsecode = None
-        if val.__class__.__name__ == "Response":  # flask test app
+        if self.testing:  # flask test app
             responsecode = val.status
         else:
             responsecode = val.status_code
