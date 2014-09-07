@@ -1,5 +1,6 @@
 __author__ = 'pharno'
 
+from flask import request
 from flask.ext import restful
 from flask.ext.restful import reqparse, marshal_with
 
@@ -10,7 +11,7 @@ from bitvid.shared import db
 from bitvid.models import User
 
 
-class UserResource(restful.Resource):
+class UserCollectionResource(restful.Resource):
 
     def _getAuthorizedUser(self):
         parser = reqparse.RequestParser()
@@ -65,5 +66,19 @@ class UserResource(restful.Resource):
         return user
 
 
+class UserResource(restful.Resource):
+
+    @marshal_with(User.marshal_fields)
+    def get(self, user):
+        if user.lower() == "current":
+            return request.session.user
+
+        usermodel = User.query.filter_by(id=user).first()
+
+        print usermodel
+        return usermodel
+
+
 def register(api):
-    api.add_resource(UserResource, '/user/')
+    api.add_resource(UserCollectionResource, '/user/')
+    api.add_resource(UserResource, '/user/<string:user>')
