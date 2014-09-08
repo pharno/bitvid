@@ -46,8 +46,10 @@ def index_video(mapper, connection, target):
         "description": target.description,
         "mime": target.originalmime,
         "user_id": target.user_id,
-        "user_name": target.user.email
+        "user_name": target.user.email,
+        "token": target.token
     }
+    
     get_es().index(get_es_index(), target.__class__.__name__, toindex, id=target.token)
 
 
