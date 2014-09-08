@@ -30,6 +30,11 @@ class DevConfig(Config):
     VIDEO_STORE_PATH = '/Users/chatz/bitvid/data/videos/'
 
 
+class PLGConfig(DevConfig):
+    VIDEO_STORE_PATH = '/home/bitvid/bitvid/data/videos/'
+    SERVER_NAME = "demo.bitvid.tv:5000"
+
+
 class TestConfig(DevConfig):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
