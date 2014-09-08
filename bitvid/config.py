@@ -32,7 +32,7 @@ class DevConfig(Config):
 
 class PLGConfig(DevConfig):
     VIDEO_STORE_PATH = '/home/bitvid/bitvid/data/videos/'
-    SERVER_NAME = "demo.bitvid.tv:5000"
+    SERVER_NAME = "cersei-web-2.bitvid.tv:5000"
 
 
 class TestConfig(DevConfig):
