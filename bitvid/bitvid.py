@@ -1,6 +1,6 @@
 from flask import request_finished, request
 
-from shared import db
+from shared import db, sentry
 from baseapp import app
 from lib.BitVidRestful import BitVidRestful
 
@@ -22,6 +22,9 @@ def save_session(*args, **kwargs):
 
 db.app = app
 db.init_app(app)
+
+sentry.app = app
+sentry.init_app(app)
 
 
 api = BitVidRestful(app, catch_all_404s=True)

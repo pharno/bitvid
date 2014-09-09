@@ -6,18 +6,18 @@ from flask.ext.restful import reqparse
 
 
 from bitvid.errors import errors, NotFound, PermissionDenied
-from bitvid.shared import db
+from bitvid.shared import db, sentry
 
 
 def make_json_error(ex):
     exceptionname = ex.__class__.__name__
 
     # traceback.print_exc()
-    if exceptionname in errors.keys():
+    if exceptionname in errors.keys() and exceptionname != "Exception":
         errordata = errors[exceptionname]
     else:
         errordata = errors["Exception"]
-        traceback.print_exc()
+        sentry.captureException()
 
     if "message" in errordata.keys():
         response = jsonify(message=str(errordata["message"]))

@@ -15,6 +15,7 @@ class Config(object):
     CELERY_RESULT_SERIALIZER = CELERY_SERIALIZER
     ELASTICSEARCH_URL = "http://localhost:9200/"
     ELASTICSEARCH_INDEX = "bitvid"
+    SENTRY_DSN = ""
 
 
 class PrdConfig(Config):
@@ -28,6 +29,7 @@ class DevConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///../database.sqlite'
     # SERVER_NAME = "local.bitvid.tv"
     VIDEO_STORE_PATH = '/Users/chatz/bitvid/data/videos/'
+    SENTRY_DSN = "http://4cf6df4822814cc998239ef2bf973c03:e81312acb5724aec84fb64a839fb3816@localhost:9000/2"
 
 
 class PLGConfig(DevConfig):

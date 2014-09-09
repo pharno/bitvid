@@ -12,6 +12,9 @@ from functools import wraps
 from errors import LoginRequiredException
 db = SQLAlchemy()
 
+from raven.contrib.flask import Sentry
+sentry = Sentry()
+
 
 def get_es():
     from pyelasticsearch import ElasticSearch
