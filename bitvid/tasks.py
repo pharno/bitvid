@@ -1,5 +1,14 @@
 from celery import Celery
+from flask import current_app
+import subprocess
+
 from shared import sentry
+from baseapp import app as flask_app
+from models.Video import Video, ConvertedVideo
+from shared import db, videofile_original_location, videofile_converted_location, make_sure_path_exists
+from Media import Media
+
+
 
 def make_celery(app):
     celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
@@ -11,20 +20,10 @@ def make_celery(app):
 
         def __call__(self, *args, **kwargs):
             with app.app_context():
-                try:
-                    return TaskBase.__call__(self, *args, **kwargs)
-                except:
-                    sentry.captureException()
+                return TaskBase.__call__(self, *args, **kwargs)
 
     celery.Task = ContextTask
     return celery
-
-from baseapp import app as flask_app
-from models.Video import Video, ConvertedVideo
-from shared import db, videofile_original_location, videofile_converted_location
-from Media import Media
-
-import subprocess
 
 db.init_app(flask_app)
 sentry.app = flask_app
@@ -32,7 +31,11 @@ sentry.init_app(flask_app)
 
 celery = make_celery(flask_app)
 
-VideoHeights = [360, 480]  # ,720,1080]
+from raven.contrib.celery import register_signal
+
+register_signal(sentry)
+
+VideoHeights = [360.0, 480.0]  # ,720.0,1080.0]
 VideoCodecs = ["H.264", "WebM", "FLV"]
 
 codecmapping = {
@@ -87,6 +90,11 @@ def transcode_video(videotoken, height, codec):
         height,
         codec_mime_mapping[codec])
 
+    print "outpath", outpath
+    print "make_sure_path_exists:",current_app.config["VIDEO_STORE_PATH"] + current_app.config["VIDEO_CONVERTED_PATH"]
+    make_sure_path_exists(current_app.config["VIDEO_STORE_PATH"] + current_app.config["VIDEO_CONVERTED_PATH"])
+    print "make_sure_path_exists"
+
     cmd = arguments.format(
         origpath=videoMedia.source_file,
         codec=codec,
@@ -96,7 +104,7 @@ def transcode_video(videotoken, height, codec):
     cmd.append(outpath)
 
     print cmd
-    subprocess.call(cmd)
+    subprocess.check_call(cmd)
 
     convertedVideoModel = ConvertedVideo(
         video,
