@@ -35,7 +35,7 @@ from raven.contrib.celery import register_signal
 
 register_signal(sentry)
 
-VideoHeights = [360.0, 480.0]  # ,720.0,1080.0]
+VideoHeights = [360, 480]  # ,720,1080]
 VideoCodecs = ["H.264", "WebM", "FLV"]
 
 codecmapping = {
@@ -74,7 +74,7 @@ def transcode_video(videotoken, height, codec):
     original_info = videoMedia.get_info_video()
     original_height = original_info["height"]
 
-    scaling = original_height / height
+    scaling = original_height / float(height)
 
     width = int(original_info["width"] / scaling)
 
