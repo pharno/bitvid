@@ -1,5 +1,5 @@
 from celery import Celery
-
+from shared import sentry
 
 def make_celery(app):
     celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
@@ -11,7 +11,11 @@ def make_celery(app):
 
         def __call__(self, *args, **kwargs):
             with app.app_context():
-                return TaskBase.__call__(self, *args, **kwargs)
+                try:
+                    return TaskBase.__call__(self, *args, **kwargs)
+                except:
+                    sentry.captureException()
+
     celery.Task = ContextTask
     return celery
 
@@ -22,8 +26,11 @@ from Media import Media
 
 import subprocess
 
-celery = make_celery(flask_app)
 db.init_app(flask_app)
+sentry.app = flask_app
+sentry.init_app(flask_app)
+
+celery = make_celery(flask_app)
 
 VideoHeights = [360, 480]  # ,720,1080]
 VideoCodecs = ["H.264", "WebM", "FLV"]
