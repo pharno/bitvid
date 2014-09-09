@@ -18,6 +18,8 @@ class Media:
             '-show_format',
             '-show_streams',
             self.source_file]
+
+        print " ".join(cmd)
         raw_data = subprocess.check_output(cmd)
         return json.loads(raw_data.decode())
 
