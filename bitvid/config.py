@@ -27,14 +27,12 @@ class PrdConfig(Config):
 class DevConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///../database.sqlite'
-    # SERVER_NAME = "local.bitvid.tv"
     VIDEO_STORE_PATH = '/Users/chatz/bitvid/data/videos/'
-    SENTRY_DSN = "http://4cf6df4822814cc998239ef2bf973c03:e81312acb5724aec84fb64a839fb3816@localhost:9000/2"
+    SENTRY_DSN = "http://2ea39eb36b0f459280a55a342e6190ef:212f3a69eac347bd98fffd5f17751b74@localhost:9000/2"
 
 
 class PLGConfig(DevConfig):
     VIDEO_STORE_PATH = '/home/bitvid/bitvid/data/videos/'
-    SERVER_NAME = "cersei-web-2.bitvid.tv:5000"
     SENTRY_DSN = "http://025e997a65724f94ace3f1a931b2c196:fed759b252b342e38ac8e3c25488f84f@cersei-web-2.bitvid.tv:9000/2"
 
 
