@@ -1,5 +1,6 @@
 __author__ = 'pharno'
 
 
-from bitvid import bitvid
-bitvid.app.run(host='0.0.0.0')
+from bitvid.bitvid import app
+if __name__ == '__main__':
+    app.run()
