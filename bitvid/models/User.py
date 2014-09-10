@@ -27,10 +27,8 @@ class User(db.Model):
 
     @password.setter
     def password(self, password):
-        if len(password) > 8:
-            return value
-        else:
-            raise ValueError("password to short")
+        if len(password) < 8:
+            raise ValueError("password to short (minimal length: 8)")
         self._password = generate_password_hash(password)
 
     def check_password(self, password):
@@ -44,4 +42,4 @@ class User(db.Model):
         if len(value) > 8:
             return value
         else:
-            raise ValueError("username to short")
+            raise ValueError("username to short (minimal length: 8)")
