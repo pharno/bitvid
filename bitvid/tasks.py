@@ -39,7 +39,7 @@ VideoHeights = [360, 480]  # ,720,1080]
 VideoCodecs = ["H.264", "WebM", "FLV"]
 
 codecmapping = {
-    "H.264": "avconv -i {origpath} -vf scale={width}:{height} -c:v libx264",
+    "H.264": "avconv -i {origpath} -strict experimental -vf scale={width}:{height} -c:v libx264",
     "WebM": "avconv -i {origpath} -vf scale={width}:{height} -c:v libvpx -b:v 1M -c:a libvorbis",
     "FLV": "avconv -i {origpath} -ar 22050 -ab 32 -f flv -vf scale={width}:{height}"}
 
