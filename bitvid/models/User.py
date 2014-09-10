@@ -39,7 +39,7 @@ class User(db.Model):
 
     @validates("email")
     def validate_email(self,key,value):
-        if len(value) > 8:
+        if len(value) >= 8:
             return value
         else:
             raise ValueError("username to short (minimal length: 8)")
