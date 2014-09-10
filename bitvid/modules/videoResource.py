@@ -85,6 +85,8 @@ class VideoResource(BitVidRestful.BitVidRestResource):
         {"videos": fields.List(fields.Nested(ConvertedVideo.marshal_fields))})
     def get(self, videoID):
         video = Video.query.filter_by(token=videoID).first()
+        if not video:
+            raise ResourceNotFoundException()
 
         return {"videos": video.convertedVideos}
 
