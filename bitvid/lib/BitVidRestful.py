@@ -19,8 +19,11 @@ def make_json_error(ex):
         errordata = errors["Exception"]
         sentry.captureException()
 
+
     if "message" in errordata.keys():
         response = jsonify(message=str(errordata["message"]))
+    else:
+        response = jsonify(message=str(ex))
 
     if "status" in errordata.keys():
         response.status_code = errordata["status"]

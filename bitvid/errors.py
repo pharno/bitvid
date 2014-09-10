@@ -30,6 +30,9 @@ errors = {
         "message": "Internal Server Error",
         "status": 500
     },
+    "ValueError": {
+        "status": 500
+    },
     "NotFound": {
         "message": "Could not find the resource you're trying to access",
         "status": 404
