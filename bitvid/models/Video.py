@@ -1,6 +1,6 @@
 from bitvid.shared import db, generate_token, login_required, videofile_original_location, get_es, get_es_index
 
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, validates
 from sqlalchemy import ForeignKey
 from sqlalchemy import event
 
@@ -37,9 +37,22 @@ class Video(db.Model):
     def __repr__(self):
         return '<video %r>' % self.title
 
+    @validates("title")
+    def validate_title(self, key, value):
+        if len(value) >= 8:
+            return value
+        else:
+            raise ValueError("title to short (minimum length: 8)")
+
+    @validates("description")
+    def validate_description(self, key, value):
+        if len(value) >= 8:
+            return value
+        else:
+            raise ValueError("description to short (minimum length: 8)")
+
 
 def index_video(mapper, connection, target):
-
     toindex = {
         "id": target.id,
         "title": target.title,
@@ -49,7 +62,7 @@ def index_video(mapper, connection, target):
         "user_name": target.user.email,
         "token": target.token
     }
-    
+
     get_es().index(get_es_index(), target.__class__.__name__, toindex, id=target.token)
 
 
