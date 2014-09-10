@@ -1,5 +1,5 @@
 from bitvid.shared import db
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, validates
 from sqlalchemy import ForeignKey
 
 from flask.ext.restful import fields
@@ -27,6 +27,10 @@ class User(db.Model):
 
     @password.setter
     def password(self, password):
+        if len(password) > 8:
+            return value
+        else:
+            raise ValueError("password to short")
         self._password = generate_password_hash(password)
 
     def check_password(self, password):
@@ -34,3 +38,10 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.email
+
+    @validates("email")
+    def validate_email(self,key,value):
+        if len(value) > 8:
+            return value
+        else:
+            raise ValueError("username to short")
