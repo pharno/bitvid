@@ -60,11 +60,19 @@ class VideoResource(BitVidRestful.BitVidRestResource):
             location='headers')
         args = parser.parse_args()
         mimetype = args["Content-Type"].split("/")[1].strip(".")
+        print "mimetype:", repr(mimetype)
+        print len(mimetype)
+        if len(mimetype) < 2:
+            raise ValueError("Videofile missing")
+
         video.originalmime = mimetype
 
         make_sure_path_exists(current_app.config["VIDEO_STORE_PATH"] + current_app.config["VIDEO_ORIGINALS_PATH"])
         filelocation = videofile_original_location(videoID, mimetype)
         originalvideofile = open(filelocation, "wb")
+        if len(request.data) < 1024:
+            raise ValueError("video smaller than 1kb? I dont believe you")
+
         originalvideofile.write(request.data)
 
         db.session.add(video)
@@ -89,6 +97,10 @@ class VideoResource(BitVidRestful.BitVidRestResource):
 
         return self._updateModelFromRequest(self.baseModel, {"token":videoID}, self.updatefields)
 
+    @login_required
+    @marshal_with(Video.marshal_fields)
+    def delete(self, videoID):
+        return self._delete(token=videoID)
 
 class VideoMediaResource(restful.Resource):
 
