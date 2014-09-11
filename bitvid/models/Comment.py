@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, validates
 from flask.ext.restful import fields
 
 from bitvid.shared import db, generate_token
@@ -41,3 +41,17 @@ class Comment(db.Model):
         self.user = user
         self.video = video
         self.token = generate_token()
+
+    @validates("title")
+    def validate_title(self, key, value):
+        if len(value) >= 8:
+            return value
+        else:
+            raise ValueError("title to short (minimum length: 8)")
+
+    @validates("content")
+    def validate_content(self, key, value):
+        if len(value) >= 8:
+            return value
+        else:
+            raise ValueError("content to short (minimum length: 8)")
