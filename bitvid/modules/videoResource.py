@@ -10,6 +10,7 @@ from bitvid.tasks import process_video
 
 from bitvid.models.Video import Video, ConvertedVideo
 from bitvid.lib import BitVidRestful
+from bitvid.Media import Media
 
 
 class VideoCollectionResource(restful.Resource):
@@ -74,6 +75,13 @@ class VideoResource(BitVidRestful.BitVidRestResource):
             raise ValueError("video smaller than 1kb? I dont believe you")
 
         originalvideofile.write(request.data)
+
+        originalvideofile.close()
+        videoFile = Media(filelocation)
+        isVid = videoFile.is_video()
+        print "isVideo:", isVid
+        if not isVid:
+            raise ValueError("not a video")
 
         db.session.add(video)
         db.session.commit()

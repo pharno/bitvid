@@ -1,7 +1,8 @@
 from fractions import Fraction
 import json
 import subprocess
-
+import traceback
+from shared import sentry
 
 class Media:
 
@@ -20,8 +21,20 @@ class Media:
             self.source_file]
 
         print " ".join(cmd)
-        raw_data = subprocess.check_output(cmd)
-        return json.loads(raw_data.decode())
+        try:
+            raw_data = json.loads(subprocess.check_output(" ".join(cmd),shell=True))
+            if "streams" not in raw_data:
+                raise ValueError("Not a Video")
+        except subprocess.CalledProcessError as ex:
+            traceback.print_exc()
+            sentry.captureException()
+
+            raise ValueError("Not a Video")
+
+        return raw_data
+
+    def is_video(self):
+        return "duration" in self.get_info_video().keys()
 
     def get_info_audio(self):
         info = self.get_info_as_dict()
@@ -47,11 +60,12 @@ class Media:
         info = self.get_info_as_dict()
         stream = None
         for item in info['streams']:
-            if item['codec_type'] == 'video':
+            if item['codec_type'] == 'video' and "bit_rate" in item.keys():
                 stream = item
                 break
         if not stream:
             return None
+
         duration = float(stream['duration'])
         file_size = float(info['format']['size'])
         width = int(stream['width'])
