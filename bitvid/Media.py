@@ -34,7 +34,8 @@ class Media:
         return raw_data
 
     def is_video(self):
-        return "duration" in self.get_info_video().keys()
+        data = self.get_info_video()
+        return data and "duration" in self.get_info_video().keys()
 
     def get_info_audio(self):
         info = self.get_info_as_dict()
