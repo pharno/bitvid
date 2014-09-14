@@ -64,7 +64,7 @@ class Media:
                 stream = item
                 break
         if not stream:
-            return None
+            raise ValueError("Not a Video")
 
         duration = float(stream['duration'])
         file_size = float(info['format']['size'])
