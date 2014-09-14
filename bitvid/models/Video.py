@@ -65,9 +65,13 @@ def index_video(mapper, connection, target):
 
     get_es().index(get_es_index(), target.__class__.__name__, toindex, id=target.token)
 
+def delete_video(mapper, connection, target):
+    get_es().delete_by_query(get_es_index(), target.__class__.__name__, "token:"+target.token)
+    print "after_delete"
 
 event.listen(Video, 'after_insert', index_video)
 event.listen(Video, 'after_update', index_video)
+event.listen(Video, 'after_delete', delete_video)
 
 
 class ConvertedVideo(db.Model):
