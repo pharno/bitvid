@@ -5,7 +5,7 @@ import subprocess
 from shared import sentry
 from baseapp import app as flask_app
 from models.Video import Video, ConvertedVideo
-from shared import db, videofile_original_location, videofile_converted_location, make_sure_path_exists
+from shared import db, videofile_original_location, videofile_converted_location, make_sure_path_exists, thumbnail_location
 from Media import Media
 
 
@@ -41,7 +41,8 @@ VideoCodecs = ["H.264", "WebM", "FLV"]
 codecmapping = {
     "H.264": "avconv -i {origpath} -strict experimental -vf scale={width}:{height} -c:v libx264",
     "WebM": "avconv -i {origpath} -vf scale={width}:{height} -c:v libvpx -b:v 1M -c:a libvorbis",
-    "FLV": "avconv -i {origpath} -ar 22050 -ab 32 -f flv -vf scale={width}:{height}"}
+    "FLV": "avconv -i {origpath} -ar 22050 -ab 32 -f flv -vf scale={width}:{height}"
+}
 
 codec_mime_mapping = {
     "H.264": "mp4",
@@ -49,6 +50,7 @@ codec_mime_mapping = {
     "FLV": "flv"
 }
 
+thumbnail_cmd = "avconv -i {origpath} -s {width}x{height} -ss 4 -vframes 1"
 
 @celery.task(name="process_video")
 def process_video(videotoken):
@@ -56,6 +58,42 @@ def process_video(videotoken):
         for codec in VideoCodecs:
             transcode_video.delay(videotoken, height, codec)
 
+    thumbnail.delay(videotoken)
+
+
+@celery.task(name="thumbnail")
+def thumbnail(videotoken):
+    height = 150
+    video = Video.query.filter_by(token=videotoken).first()
+    videoMedia = Media(
+        videofile_original_location(
+            video.token,
+            video.originalmime))
+
+    original_info = videoMedia.get_info_video()
+    original_height = original_info["height"]
+
+    scaling = original_height / float(height)
+
+    width = int(original_info["width"] / scaling)
+
+    off_by_1 = width % 2
+
+    if off_by_1:
+        width -= 1
+
+    outpath = thumbnail_location(videotoken)
+    make_sure_path_exists(current_app.config["THUMBNAIL_STORE_PATH"])
+
+    cmd = thumbnail_cmd.format(
+        origpath=videoMedia.source_file,
+        height=height,
+        width=width).split(" ")
+
+    cmd.append(outpath)
+
+    print cmd
+    subprocess.check_call(cmd)
 
 @celery.task(name="transcode_video")
 def transcode_video(videotoken, height, codec):

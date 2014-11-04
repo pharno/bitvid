@@ -53,6 +53,9 @@ def videofile_webserver_path(token, height, extention):
     return "/videos/" + token + "_" + str(height) + "." + extention
 
 
+def thumbnail_location(token):
+    return current_app.config["THUMBNAIL_STORE_PATH"] + token + ".jpg"
+
 
 def make_sure_path_exists(path):
     try:

@@ -28,6 +28,7 @@ class DevConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///../database.sqlite'
     VIDEO_STORE_PATH = '/Users/chatz/bitvid/data/videos/'
+    THUMBNAIL_STORE_PATH = '/Users/chatz/bitvid/data/thumbs/'
     SENTRY_DSN = "http://2ea39eb36b0f459280a55a342e6190ef:212f3a69eac347bd98fffd5f17751b74@localhost:9000/2"
 
 
