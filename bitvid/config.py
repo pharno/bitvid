@@ -34,6 +34,7 @@ class DevConfig(Config):
 
 class PLGConfig(DevConfig):
     VIDEO_STORE_PATH = '/home/bitvid/bitvid/data/videos/'
+    THUMBNAIL_STORE_PATH = '/home/bitvid/bitvid/data/thumbs/'
     SENTRY_DSN = "http://025e997a65724f94ace3f1a931b2c196:fed759b252b342e38ac8e3c25488f84f@cersei-web-2.bitvid.tv:9000/2"
 
 
