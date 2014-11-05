@@ -1,4 +1,5 @@
-from bitvid.shared import db, generate_token, login_required, videofile_original_location, get_es, get_es_index
+from bitvid.shared import db, generate_token, get_es, get_es_index
+from bitvid.models.Mixins import Datemixin
 
 from sqlalchemy.orm import relationship, backref, validates
 from sqlalchemy import ForeignKey
@@ -8,7 +9,7 @@ from sqlalchemy import event
 from flask.ext.restful import fields
 
 
-class Video(db.Model):
+class Video(db.Model, Datemixin):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128))
     description = db.Column(db.String(4096))
@@ -74,7 +75,7 @@ event.listen(Video, 'after_update', index_video)
 event.listen(Video, 'after_delete', delete_video)
 
 
-class ConvertedVideo(db.Model):
+class ConvertedVideo(db.Model, Datemixin):
     marshal_fields = {
         "height": fields.Integer,
         "codec": fields.String

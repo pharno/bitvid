@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship, backref, validates
 from flask.ext.restful import fields
 
 from bitvid.shared import db, generate_token
+from bitvid.models.Mixins import Datemixin
 
 
 class AuthorField(fields.Raw):
@@ -11,7 +12,7 @@ class AuthorField(fields.Raw):
         return user.email
 
 
-class Comment(db.Model):
+class Comment(db.Model, Datemixin):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128))

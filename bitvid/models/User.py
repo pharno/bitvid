@@ -1,12 +1,12 @@
 from bitvid.shared import db
-from sqlalchemy.orm import relationship, backref, validates
-from sqlalchemy import ForeignKey
+from bitvid.models.Mixins import Datemixin
 
+from sqlalchemy.orm import validates
 from flask.ext.restful import fields
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-class User(db.Model):
+class User(db.Model, Datemixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True)
     _password = db.Column(db.String(128))
