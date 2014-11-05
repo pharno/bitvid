@@ -10,8 +10,9 @@ def init_db():
 
 def reset():
     local("rm database.sqlite")
-    local("curl -XDELETE http://localhost:9200/bitvid")
     init_db()
+
+    local("curl -XDELETE http://127.0.0.1:9200/bitvid")
 
 def pep8():
     local("autopep8 --aggressive --aggressive --in-place -r bitvid")
