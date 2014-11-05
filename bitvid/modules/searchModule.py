@@ -8,7 +8,21 @@ import pyelasticsearch
 
 class SearchResource(BitVidRestful.BitVidRestResource):
     def get(self):
-        searchquery = request.args.get("q")
+        query = request.args.get("q")
+
+        searchquery = {
+            "query": {
+                "query_string": {
+                    "query": query
+                    }
+            },
+            "sort": {
+                "created_at": {
+                    "order": "desc"
+                }
+            }
+        }
+
         try:
             seachresult = get_es().search(searchquery, index=get_es_index())
         except pyelasticsearch.exceptions.ElasticHttpNotFoundError:
