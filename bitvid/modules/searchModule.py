@@ -9,6 +9,8 @@ import pyelasticsearch
 class SearchResource(BitVidRestful.BitVidRestResource):
     def get(self):
         query = request.args.get("q")
+        start = int(request.args.get("page",0)) * 10
+
 
         searchquery = {
             "query": {
@@ -20,7 +22,8 @@ class SearchResource(BitVidRestful.BitVidRestResource):
                 "created_at": {
                     "order": "desc"
                 }
-            }
+            },
+            "from": start
         }
 
         try:
@@ -28,9 +31,10 @@ class SearchResource(BitVidRestful.BitVidRestResource):
         except pyelasticsearch.exceptions.ElasticHttpNotFoundError:
             raise NotFound
 
+        numresults = seachresult["hits"]["total"]
         actualhits = [hit["_source"] for hit in seachresult["hits"]["hits"]]
         # return pformat(actualhits, indent=4)
-        return actualhits
+        return {"num":numresults,"hits":actualhits}
 
 def register(api):
     api.add_resource(SearchResource,"/search")
