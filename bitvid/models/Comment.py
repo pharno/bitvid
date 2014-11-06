@@ -43,7 +43,7 @@ class Comment(db.Model, Datemixin):
         self.video = video
         self.token = generate_token()
 
-    @validates("title")
+    #@validates("title")
     def validate_title(self, key, value):
         if len(value) >= 8:
             return value
