@@ -15,11 +15,11 @@ class AuthResource(restful.Resource):
     @marshal_with(Session.marshal_fields)
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('email', required=True, type=str)
+        parser.add_argument('name', required=True, type=str)
         parser.add_argument('password', required=True, type=str)
         args = parser.parse_args()
 
-        user = User.query.filter_by(email=args["email"]).first()
+        user = User.query.filter_by(name=args["name"]).first()
 
         if not user:
             raise UserNotFoundException()

@@ -15,11 +15,11 @@ class UserCollectionResource(restful.Resource):
 
     def _getAuthorizedUser(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('email', required=True, type=str)
+        parser.add_argument('name', required=True, type=str)
         parser.add_argument('password', required=True, type=str)
         args = parser.parse_args()
 
-        user = User.query.filter_by(email=args["email"]).first()
+        user = User.query.filter_by(name=args["name"]).first()
 
         if not user:
             raise UserNotFoundException()
@@ -32,15 +32,15 @@ class UserCollectionResource(restful.Resource):
     @marshal_with(User.marshal_fields)
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('email', required=True, type=str)
+        parser.add_argument('name', required=True, type=str)
         parser.add_argument('password', required=True, type=str)
         args = parser.parse_args()
 
-        userexists = User.query.filter_by(email=args["email"]).first()
+        userexists = User.query.filter_by(name=args["name"]).first()
         if userexists is not None:
             raise UserExistsException()
 
-        user = User(args["email"], args["password"])
+        user = User(args["name"], args["password"])
         db.session.add(user)
         db.session.commit()
         return user

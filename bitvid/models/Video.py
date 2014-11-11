@@ -60,7 +60,7 @@ def index_video(mapper, connection, target):
         "description": target.description,
         "mime": target.originalmime,
         "user_id": target.user_id,
-        "user_name": target.user.email,
+        "user_name": target.user.name,
         "token": target.token,
         "created_at": target.created_at.isoformat(),
         "updated_at": target.created_at.isoformat()

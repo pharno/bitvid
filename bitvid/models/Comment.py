@@ -9,7 +9,7 @@ from bitvid.models.Mixins import Datemixin
 class AuthorField(fields.Raw):
 
     def format(self, user):
-        return user.email
+        return user.name
 
 
 class Comment(db.Model, Datemixin):

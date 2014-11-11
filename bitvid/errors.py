@@ -38,15 +38,15 @@ errors = {
         "status": 404
     },
     "UserExistsException": {
-        "message": "User with this email already exists",
+        "message": "User with this name already exists",
         "status": 409
     },
     "UserNotFoundException": {
-        "message": "user with given email not found",
+        "message": "user with given name not found",
         "status": 404
     },
     "IncorrectCredentialsException": {
-        "message": "could not login with given email and password",
+        "message": "could not login with given name and password",
         "status": 401
     },
     "MethodNotAllowed": {

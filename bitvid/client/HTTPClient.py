@@ -69,10 +69,10 @@ class HTTPClient:
         val = self._request(self.request.put, url, data)
         return val
 
-    def authenticate(self, email, password):
-        print "authenticating {email}:{password}".format(email=email, password=password)
+    def authenticate(self, name, password):
+        print "authenticating {name}:{password}".format(name=name, password=password)
         logindata = {
-            "email": email,
+            "name": name,
             "password": password
         }
         authdata = self._post("/auth/", logindata)
@@ -84,10 +84,10 @@ class HTTPClient:
             print self.authtoken
             return True
 
-    def register(self, email, password):
-        print "registrating {email}:{password}".format(email=email, password=password)
+    def register(self, name, password):
+        print "registrating {name}:{password}".format(name=name, password=password)
         registerdata = {
-            "email": email,
+            "name": name,
             "password": password
         }
         registerdata = self._post("/user/", registerdata)
@@ -141,15 +141,15 @@ class HTTPClient:
 
         return self._json(returndata)["comments"]
 
-    def unregister(self, email, password):
-        print "unregistering user", email
+    def unregister(self, name, password):
+        print "unregistering user", name
         returndata = self._delete(
-            "/user/", {"email": email, "password": password})
+            "/user/", {"name": name, "password": password})
         return returndata
 
-    def changePassword(self, email, oldpass, newpass):
-        print "changing password for user", email
-        updatedata = {"email": email,
+    def changePassword(self, name, oldpass, newpass):
+        print "changing password for user", name
+        updatedata = {"name": name,
                       "password": oldpass,
                       "newpassword": newpass}
         returndata = self._put("/user/", updatedata)
