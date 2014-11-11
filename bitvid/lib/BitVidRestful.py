@@ -12,23 +12,27 @@ from bitvid.shared import db, sentry
 def make_json_error(ex):
     exceptionname = ex.__class__.__name__
 
-    # traceback.print_exc()
-    if exceptionname in errors.keys() and exceptionname != "Exception":
-        errordata = errors[exceptionname]
-    else:
-        errordata = errors["Exception"]
-        sentry.captureException()
+    try:
+        response = jsonify(ex.data)
+        print ex.data
+        return response
+    except:
+        if exceptionname in errors.keys() and exceptionname != "Exception":
+            errordata = errors[exceptionname]
+        else:
+            errordata = errors["Exception"]
+            sentry.captureException()
 
 
-    if "message" in errordata.keys():
-        response = jsonify(message=str(errordata["message"]))
-    else:
-        response = jsonify(message=str(ex))
+        if "message" in errordata.keys():
+            response = jsonify(message=str(errordata["message"]))
+        else:
+            response = jsonify(message=str(ex))
 
-    if "status" in errordata.keys():
-        response.status_code = errordata["status"]
+        if "status" in errordata.keys():
+            response.status_code = errordata["status"]
 
-    return response
+        return response
 
 
 class BitVidRestful(restful.Api):
