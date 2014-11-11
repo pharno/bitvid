@@ -20,7 +20,7 @@ class AuthTest(BaseTest):
         self.client.register(self.email, self.password)
         self.client.authenticate(self.email, self.password)
 
-        self.videoToken = self.client._getVideoToken("title", "desc")
+        self.videoToken = self.client._getVideoToken("titleforvideo", "descforvideo")
 
     def test_singleComment(self):
         assert self._send_and_get_comment(
