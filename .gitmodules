@@ -1,3 +1,18 @@
 [submodule "docs/_themes/flask"]
 	path = docs/_themes/flask
 	url = https://github.com/mitsuhiko/flask-sphinx-themes.git
+[submodule "cookbooks/python"]
+	path = cookbooks/python
+	url = https://github.com/poise/python
+[submodule "cookbooks/build-essentials"]
+	path = cookbooks/build-essentials
+	url = https://github.com/opscode-cookbooks/build-essential
+[submodule "cookbooks/build-essential"]
+	path = cookbooks/build-essential
+	url = https://github.com/opscode-cookbooks/build-essential
+[submodule "cookbooks/yum-epel"]
+	path = cookbooks/yum-epel
+	url = https://github.com/opscode-cookbooks/yum-epel
+[submodule "cookbooks/yum"]
+	path = cookbooks/yum
+	url = https://github.com/opscode-cookbooks/yum
