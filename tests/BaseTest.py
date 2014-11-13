@@ -14,7 +14,7 @@ import tempfile
 from bitvid import bitvid
 from bitvid.shared import get_es, get_es_index
 
-from bitvid.client.HTTPClient import HTTPClient
+from bitvid.client.HTTPClient import BitvidClient
 
 class BaseTest(unittest.TestCase):
 
@@ -32,7 +32,7 @@ class BaseTest(unittest.TestCase):
         bitvid.app.config['TESTING'] = True
         self.app = bitvid.app.test_client()
         bitvid.init_db()
-        self.client = HTTPClient("http://local.bitvid.tv:5000",self.app)
+        self.client = BitvidClient("http://local.bitvid.tv:5000",self.app)
 
         self._setup()
 

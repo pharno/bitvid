@@ -4,11 +4,12 @@ from bitvid.models.Mixins import Datemixin
 from sqlalchemy.orm import validates
 from flask.ext.restful import fields
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from email.utils import parseaddr
 
 class User(db.Model, Datemixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True)
+    email = db.Column(db.String(120), unique=True)
     _password = db.Column(db.String(128))
     #sessions = relationship("Session")
 
@@ -17,7 +18,7 @@ class User(db.Model, Datemixin):
         "id": fields.Integer
     }
 
-    def __init__(self, name, password):
+    def __init__(self, name, email, password):
         self.name = name
         self.password = password
 
@@ -43,3 +44,18 @@ class User(db.Model, Datemixin):
             return value
         else:
             raise ValueError("username to short (minimal length: 3)")
+
+    @validates("email")
+    def validate_email(self,key,value):
+        print "validating email:", value
+        if len(value) >= 3:
+            return value
+        else:
+            raise ValueError("email to short (minimal length: 3)")
+
+        parsed = parseaddr(value)
+        newvalue = parsed[1]
+        if newvalue:
+            return newvalue
+
+        raise ValueError("invalid email")

@@ -4,6 +4,7 @@ from bitvid import errors
 
 
 class AuthTest(BaseTest):
+    username ="testuser"
     email = "testmail@local.bitvid.tv"
     password = "testpassword"
 
@@ -17,10 +18,10 @@ class AuthTest(BaseTest):
     secondContent = "this is some content for the second comment"
 
     def _setup(self):
-        self.client.register(self.email, self.password)
-        self.client.authenticate(self.email, self.password)
+        self.client.register(self.username, self.email, self.password)
+        self.client.authenticate(self.username, self.password)
 
-        self.videoToken = self.client._getVideoToken("titleforvideo", "descforvideo")
+        self.videoToken = self.client._getVideoToken("titleforvideo", "descforvideo")["token"]
 
     def test_singleComment(self):
         assert self._send_and_get_comment(
@@ -32,7 +33,7 @@ class AuthTest(BaseTest):
         returndata = self.client.getComment(token["token"])
         assert returndata["title"] == title
         assert returndata["content"] == content
-        assert returndata["author"] == self.email
+        assert returndata["author"] == self.username
 
         return True
 
@@ -65,7 +66,7 @@ class AuthTest(BaseTest):
         returndata = self.client.getComment(token)
         assert returndata["title"] == self.firstTitle
         assert returndata["content"] == self.firstContent
-        assert returndata["author"] == self.email
+        assert returndata["author"] == self.username
 
         deletedata = self.client.deleteComment(token)
 
@@ -82,7 +83,7 @@ class AuthTest(BaseTest):
         returndata = self.client.getComment(token)
         assert returndata["title"] == self.firstTitle
         assert returndata["content"] == self.firstContent
-        assert returndata["author"] == self.email
+        assert returndata["author"] == self.username
 
         self.client.updateComment(
             token, self.firstTitleChanged, self.firstContentChanged)
@@ -92,7 +93,7 @@ class AuthTest(BaseTest):
         print "returndata update", returndata
         assert returndata["title"] == self.firstTitleChanged
         assert returndata["content"] == self.firstContentChanged
-        assert returndata["author"] == self.email
+        assert returndata["author"] == self.username
 
     def test_commentUnauthorized(self):
         self.client.authtoken = None
@@ -107,7 +108,7 @@ class AuthTest(BaseTest):
         returndata = self.client.getComment(token)
         assert returndata["title"] == self.firstTitle
         assert returndata["content"] == self.firstContent
-        assert returndata["author"] == self.email
+        assert returndata["author"] == self.username
 
         self.client.authtoken = None
 
@@ -125,12 +126,12 @@ class AuthTest(BaseTest):
         returndata = self.client.getComment(token)
         assert returndata["title"] == self.firstTitle
         assert returndata["content"] == self.firstContent
-        assert returndata["author"] == self.email
+        assert returndata["author"] == self.username
 
         self.client.authtoken = None
 
-        self.client.register("other"+self.email, self.password)
-        self.client.authenticate("other"+self.email, self.password)
+        self.client.register("otheruser", "other"+self.email, self.password)
+        self.client.authenticate("otheruser", self.password)
 
         returndata = self.client.updateComment(
             token, self.firstTitleChanged, self.firstContentChanged)
@@ -146,7 +147,7 @@ class AuthTest(BaseTest):
         returndata = self.client.getComment(token)
         assert returndata["title"] == self.firstTitle
         assert returndata["content"] == self.firstContent
-        assert returndata["author"] == self.email
+        assert returndata["author"] == self.username
 
         self.client.authtoken = None
 
@@ -158,7 +159,7 @@ class AuthTest(BaseTest):
 
         assert returndata["title"] == self.firstTitle
         assert returndata["content"] == self.firstContent
-        assert returndata["author"] == self.email
+        assert returndata["author"] == self.username
 
     def test_deleteCommentWrongUser(self):
         token = self.client.comment(
@@ -167,16 +168,17 @@ class AuthTest(BaseTest):
         returndata = self.client.getComment(token)
         assert returndata["title"] == self.firstTitle
         assert returndata["content"] == self.firstContent
-        assert returndata["author"] == self.email
+        assert returndata["author"] == self.username
 
-        self.client.register("other"+self.email, self.password)
-        self.client.authenticate("other"+self.email, self.password)
+        self.client.register("otheruser", "other"+self.email, self.password)
+        self.client.authenticate("otheruser", self.password)
         deletedata = self.client.deleteComment(token)
 
+        print "deletedata:",deletedata
         assert deletedata["message"] == errors.errors["PermissionDenied"]["message"]
 
         returndata = self.client.getComment(token)
 
         assert returndata["title"] == self.firstTitle
         assert returndata["content"] == self.firstContent
-        assert returndata["author"] == self.email
+        assert returndata["author"] == self.username

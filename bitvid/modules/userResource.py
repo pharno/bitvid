@@ -33,6 +33,7 @@ class UserCollectionResource(restful.Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('name', required=True, type=str)
+        parser.add_argument('email', required=True, type=str)
         parser.add_argument('password', required=True, type=str)
         args = parser.parse_args()
 
@@ -40,7 +41,11 @@ class UserCollectionResource(restful.Resource):
         if userexists is not None:
             raise UserExistsException()
 
-        user = User(args["name"], args["password"])
+        userexists = User.query.filter_by(email=args["email"]).first()
+        if userexists is not None:
+            raise UserExistsException()
+
+        user = User(args["name"], args["email"], args["password"])
         db.session.add(user)
         db.session.commit()
         return user

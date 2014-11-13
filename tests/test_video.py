@@ -4,6 +4,7 @@ from bitvid import errors
 
 
 class VideoTest(BaseTest):
+    username = "testuser"
     email = "testmail@local.bitvid.tv"
     password = "testpassword"
 
@@ -16,10 +17,11 @@ class VideoTest(BaseTest):
     videoFile = "./data/video/small.mp4"
 
     def _setup(self):
-        self.client.register(self.email, self.password)
-        self.client.authenticate(self.email, self.password)
+        self.client.register(self.username, self.email, self.password)
+        self.client.authenticate(self.username, self.password)
 
-        self.videoToken = self.client._getVideoToken(self.firstTitle,self.firstDescription)
+        self.videoToken = self.client._getVideoToken(self.firstTitle,self.firstDescription)["token"]
+        print self.videoToken
 
     def test_uploadVideo(self):
         vid = open(self.videoFile, "r")
@@ -45,8 +47,8 @@ class VideoTest(BaseTest):
         assert vidret["message"] == errors.errors["LoginRequiredException"]["message"]
 
     def test_uploadVideoWrongUser(self):
-        self.client.register("other"+self.email, self.password)
-        self.client.authenticate("other"+self.email, self.password)
+        self.client.register("otheruser", "other"+self.email, self.password)
+        self.client.authenticate("otheruser", self.password)
 
         vid = open(self.videoFile, "r")
         vidret = self.client.uploadVideo(self.videoToken, vid)
