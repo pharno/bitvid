@@ -1,5 +1,5 @@
 import traceback
-from flask import jsonify, request
+from flask import jsonify, request, current_app
 from flask.ext import restful
 
 from flask.ext.restful import reqparse
@@ -7,21 +7,25 @@ from flask.ext.restful import reqparse
 
 from bitvid.errors import errors, NotFound, PermissionDenied
 from bitvid.shared import db, sentry
-
+import traceback
 
 def make_json_error(ex):
     exceptionname = ex.__class__.__name__
 
-    try:
+    if hasattr(ex, "data"):
         response = jsonify(ex.data)
+        response.status_code = 400
         print ex.data
         return response
-    except:
+    else:
         if exceptionname in errors.keys() and exceptionname != "Exception":
             errordata = errors[exceptionname]
         else:
+            if current_app.config["DEBUG"]:
+                traceback.print_exc()
+            else:
+                sentry.captureException()
             errordata = errors["Exception"]
-            sentry.captureException()
 
 
         if "message" in errordata.keys():
