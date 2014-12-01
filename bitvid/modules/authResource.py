@@ -48,5 +48,5 @@ class CounterResource(restful.Resource):
 
 
 def register(api):
-    api.add_resource(AuthResource, '/auth/')
-    api.add_resource(CounterResource, '/counter/')
+    api.add_resource(AuthResource, '/auth')
+    api.add_resource(CounterResource, '/counter')

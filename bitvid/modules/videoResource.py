@@ -119,7 +119,7 @@ class VideoMediaResource(restful.Resource):
 
 
 def register(api):
-    api.add_resource(VideoCollectionResource, "/video/")
+    api.add_resource(VideoCollectionResource, "/video")
     api.add_resource(
         VideoMediaResource,
         "/video/<string:videoID>/<string:ext>/<int:height>")

@@ -85,5 +85,5 @@ class UserResource(restful.Resource):
 
 
 def register(api):
-    api.add_resource(UserCollectionResource, '/user/')
+    api.add_resource(UserCollectionResource, '/user')
     api.add_resource(UserResource, '/user/<string:user>')
