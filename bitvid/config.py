@@ -1,10 +1,26 @@
 __author__ = 'pharno'
 
+import os
+
+db = None
+try:
+    os.environ['RDS_DB_NAME']
+
+    db = "mysql://{user}:{password}@{host}:{port}/{name}".format(
+        name = os.environ['RDS_DB_NAME'],
+        user = os.environ['RDS_USERNAME'],
+        password = os.environ['RDS_PASSWORD'],
+        host = os.environ['RDS_HOSTNAME'],
+        port = os.environ['RDS_PORT']
+        )
+except:
+    db = 'sqlite:///../database.sqlite'
+
 
 class Config(object):
     DEBUG = False
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = 'sqlite://:memory:'
+    SQLALCHEMY_DATABASE_URI = db
     VIDEO_ORIGINALS_PATH = 'originals/'
     VIDEO_CONVERTED_PATH = 'converted/'
     CELERY_BROKER_URL = 'redis://localhost:6379',
@@ -19,14 +35,12 @@ class Config(object):
 
 
 class PrdConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'mysql://user@localhost/foo'
     # /videos on the bitvid s3 bucket for permanent storage
     VIDEO_STORE_PATH = '/opt/bitvid/data/videos/'
 
 
 class DevConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///../database.sqlite'
     VIDEO_STORE_PATH = '/Users/chatz/bitvid/data/videos/'
     THUMBNAIL_STORE_PATH = '/Users/chatz/bitvid/data/thumbs/'
     SENTRY_DSN = "http://2ea39eb36b0f459280a55a342e6190ef:212f3a69eac347bd98fffd5f17751b74@localhost:9000/2"
