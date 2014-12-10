@@ -2,25 +2,13 @@ __author__ = 'pharno'
 
 import os
 
-db = None
-try:
-    os.environ['RDS_DB_NAME']
-
-    db = "mysql://{user}:{password}@{host}:{port}/{name}".format(
-        name = os.environ['RDS_DB_NAME'],
-        user = os.environ['RDS_USERNAME'],
-        password = os.environ['RDS_PASSWORD'],
-        host = os.environ['RDS_HOSTNAME'],
-        port = os.environ['RDS_PORT']
-        )
-except:
-    db = 'sqlite:///../database.sqlite'
 
 
 class Config(object):
     DEBUG = False
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = db
+    WORKER = os.environ.get("WORKER",False)
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DB_CONNECTION","sqlite:///../database.sqlite")
     VIDEO_ORIGINALS_PATH = 'originals/'
     VIDEO_CONVERTED_PATH = 'converted/'
     CELERY_BROKER_URL = 'redis://localhost:6379',
