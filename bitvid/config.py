@@ -7,7 +7,7 @@ import os
 class Config(object):
     DEBUG = False
     TESTING = False
-    WORKER = os.environ.get("WORKER",False)
+    WORKER = os.environ.get("WORKER","False").lower() in ("yes", "true", "t", "1")
     SQLALCHEMY_DATABASE_URI = os.environ.get("DB_CONNECTION","sqlite:///../database.sqlite")
     VIDEO_ORIGINALS_PATH = 'originals/'
     VIDEO_CONVERTED_PATH = 'converted/'
