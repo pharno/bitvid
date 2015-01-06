@@ -15,6 +15,10 @@ Env:""".format(
 for key,value in os.environ.items():
     print "{key} = {value}".format(key=key,value=value)
 
+print "================"
+print "__name__ == '__main__'",__name__ == '__main__'
+print "not application.config['WORKER']",not application.config["WORKER"]
+print "__name__ == '__main__' and not application.config['WORKER']",__name__ == '__main__' and not application.config["WORKER"]
 if __name__ == '__main__' and not application.config["WORKER"]:
     application.run(os.environ.get("HOST","127.0.0.1"),int(os.environ.get("PORT",5000)))
 else:
